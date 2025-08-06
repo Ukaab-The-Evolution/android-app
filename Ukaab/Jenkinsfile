@@ -1,8 +1,14 @@
 pipeline {
   agent any
+
+  environment {
+    GITHUB_CREDENTIALS = 'github-pat'
+  }
+
   parameters {
     string(name: 'BUILD_TYPE', defaultValue: 'Release', description: 'Build type: Debug or Release')
   }
+
   stages {
     stage('Checkout') {
       steps {
@@ -14,26 +20,61 @@ pipeline {
       steps {
         script {
           def userId = sh(script: "id -u || echo 1000", returnStdout: true).trim()
-          docker.build("android-build:${env.BUILD_TYPE}", "--build-arg LOCAL_USER_ID=${userId} .")
-            .inside("-e LOCAL_USER_ID=${userId}") {
-              if (params.BUILD_TYPE == "Release") {
-                sh "cd android && ./gradlew assembleRelease"
-              } else {
-                sh "cd android && ./gradlew assembleDebug"
-              }
-            }
+
+          docker.build(
+            "android-build:${params.BUILD_TYPE}",
+            "-f Ukaab/Dockerfile --build-arg LOCAL_USER_ID=${userId} Ukaab"
+          ).inside("-e LOCAL_USER_ID=${userId}") {
+
+            sh '''
+              cd Ukaab
+
+              # Ensure node_modules exists
+              if [ ! -d "node_modules" ]; then
+                echo "Installing node modules..."
+                npm install --legacy-peer-deps
+              fi
+
+              # Generate android/ folder if not present
+              if [ ! -d "android" ]; then
+                echo "Android folder not found. Generating..."
+                npx react-native init tempApp --skip-install
+                mv tempApp/android .
+                rm -rf tempApp
+              fi
+
+              cd android
+              chmod +x gradlew
+
+              if [ "$BUILD_TYPE" = "Release" ]; then
+                ./gradlew assembleRelease
+              else
+                ./gradlew assembleDebug
+              fi
+            '''
+          }
         }
       }
     }
 
     stage('Archive APK') {
       steps {
-        archiveArtifacts artifacts: 'android/app/build/outputs/apk/**/*.apk', fingerprint: true
+        archiveArtifacts artifacts: 'Ukaab/android/app/build/outputs/apk/**/*.apk', fingerprint: true
       }
     }
   }
 
   post {
+    success {
+      githubNotify context: 'continuous-integration/jenkins/pr-head',
+                   status:  'SUCCESS',
+                   credentialsId: env.GITHUB_CREDENTIALS
+    }
+    failure {
+      githubNotify context: 'continuous-integration/jenkins/pr-head',
+                   status:  'FAILURE',
+                   credentialsId: env.GITHUB_CREDENTIALS
+    }
     always {
       cleanWs()
     }
