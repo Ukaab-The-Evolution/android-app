@@ -1,8 +1,15 @@
 pipeline {
   agent any
+
+  // 1) Reference your GitHub PAT credential here
+  environment {
+    GITHUB_CREDENTIALS = 'github-pat'
+  }
+
   parameters {
     string(name: 'BUILD_TYPE', defaultValue: 'Release', description: 'Build type: Debug or Release')
   }
+
   stages {
     stage('Checkout') {
       steps {
@@ -14,14 +21,14 @@ pipeline {
       steps {
         script {
           def userId = sh(script: "id -u || echo 1000", returnStdout: true).trim()
-          docker.build("android-build:${env.BUILD_TYPE}", "--build-arg LOCAL_USER_ID=${userId} .")
-            .inside("-e LOCAL_USER_ID=${userId}") {
-              if (params.BUILD_TYPE == "Release") {
-                sh "cd android && ./gradlew assembleRelease"
-              } else {
-                sh "cd android && ./gradlew assembleDebug"
-              }
+          docker.build("android-build:${params.BUILD_TYPE}", "--build-arg LOCAL_USER_ID=${userId} .")
+                .inside("-e LOCAL_USER_ID=${userId}") {
+            if (params.BUILD_TYPE == "Release") {
+              sh "cd android && ./gradlew assembleRelease"
+            } else {
+              sh "cd android && ./gradlew assembleDebug"
             }
+          }
         }
       }
     }
@@ -34,6 +41,18 @@ pipeline {
   }
 
   post {
+    success {
+      // 2) Report SUCCESS back to GitHub under the exact context name
+      githubNotify context: 'continuous-integration/jenkins/pr-head',
+                   status:  'SUCCESS',
+                   credentialsId: env.GITHUB_CREDENTIALS
+    }
+    failure {
+      // 3) Report FAILURE back to GitHub
+      githubNotify context: 'continuous-integration/jenkins/pr-head',
+                   status:  'FAILURE',
+                   credentialsId: env.GITHUB_CREDENTIALS
+    }
     always {
       cleanWs()
     }
