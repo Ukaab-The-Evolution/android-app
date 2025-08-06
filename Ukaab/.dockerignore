@@ -1,0 +1,10 @@
+# .dockerignore
+node_modules
+android/.gradle
+android/.idea
+android/app/build
+*.apk
+*.keystore
+.git
+.gitignore
+.env
