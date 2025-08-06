@@ -19,16 +19,20 @@ pipeline {
     stage('Build via Docker') {
       steps {
         script {
+          // Get the current user ID for file permissions
           def userId = sh(script: "id -u || echo 1000", returnStdout: true).trim()
 
+          // Build Docker image using Ukaab as context
           docker.build(
             "android-build:${params.BUILD_TYPE}",
             "-f Ukaab/Dockerfile --build-arg LOCAL_USER_ID=${userId} Ukaab"
           ).inside("-e LOCAL_USER_ID=${userId}") {
+
+            // Run Gradle build based on build type
             if (params.BUILD_TYPE == "Release") {
-              sh "cd Ukaab/android && ./gradlew assembleRelease"
+              sh "cd android && ./gradlew assembleRelease"
             } else {
-              sh "cd Ukaab/android && ./gradlew assembleDebug"
+              sh "cd android && ./gradlew assembleDebug"
             }
           }
         }
@@ -37,7 +41,7 @@ pipeline {
 
     stage('Archive APK') {
       steps {
-        archiveArtifacts artifacts: 'Ukaab/android/app/build/outputs/apk/**/*.apk', fingerprint: true
+        archiveArtifacts artifacts: 'android/app/build/outputs/apk/**/*.apk', fingerprint: true
       }
     }
   }
