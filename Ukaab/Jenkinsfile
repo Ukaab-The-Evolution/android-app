@@ -1,8 +1,14 @@
 pipeline {
   agent any
+
+  environment {
+    GITHUB_CREDENTIALS = 'github-pat'
+  }
+
   parameters {
     string(name: 'BUILD_TYPE', defaultValue: 'Release', description: 'Build type: Debug or Release')
   }
+
   stages {
     stage('Checkout') {
       steps {
@@ -13,27 +19,42 @@ pipeline {
     stage('Build via Docker') {
       steps {
         script {
+          // get a UID for file permissions inside the container
           def userId = sh(script: "id -u || echo 1000", returnStdout: true).trim()
-          docker.build("android-build:${env.BUILD_TYPE}", "--build-arg LOCAL_USER_ID=${userId} .")
-            .inside("-e LOCAL_USER_ID=${userId}") {
-              if (params.BUILD_TYPE == "Release") {
-                sh "cd android && ./gradlew assembleRelease"
-              } else {
-                sh "cd android && ./gradlew assembleDebug"
-              }
+
+          // Build using Ukaab/Dockerfile, with Ukaab as the context
+          docker.build(
+            "android-build:${params.BUILD_TYPE}",
+            "-f Ukaab/Dockerfile --build-arg LOCAL_USER_ID=${userId} Ukaab"
+          ).inside("-e LOCAL_USER_ID=${userId}") {
+            if (params.BUILD_TYPE == "Release") {
+              sh "cd Ukaab && ./gradlew assembleRelease"
+            } else {
+              sh "cd Ukaab && ./gradlew assembleDebug"
             }
+          }
         }
       }
     }
 
     stage('Archive APK') {
       steps {
-        archiveArtifacts artifacts: 'android/app/build/outputs/apk/**/*.apk', fingerprint: true
+        archiveArtifacts artifacts: 'Ukaab/app/build/outputs/apk/**/*.apk', fingerprint: true
       }
     }
   }
 
   post {
+    success {
+      githubNotify context: 'continuous-integration/jenkins/pr-head',
+                   status:  'SUCCESS',
+                   credentialsId: env.GITHUB_CREDENTIALS
+    }
+    failure {
+      githubNotify context: 'continuous-integration/jenkins/pr-head',
+                   status:  'FAILURE',
+                   credentialsId: env.GITHUB_CREDENTIALS
+    }
     always {
       cleanWs()
     }
