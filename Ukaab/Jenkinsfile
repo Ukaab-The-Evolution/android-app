@@ -1,7 +1,6 @@
 pipeline {
   agent any
 
-  // 1) Reference your GitHub PAT credential here
   environment {
     GITHUB_CREDENTIALS = 'github-pat'
   }
@@ -20,13 +19,18 @@ pipeline {
     stage('Build via Docker') {
       steps {
         script {
+          // get a UID for file permissions inside the container
           def userId = sh(script: "id -u || echo 1000", returnStdout: true).trim()
-          docker.build("android-build:${params.BUILD_TYPE}", "--build-arg LOCAL_USER_ID=${userId} .")
-                .inside("-e LOCAL_USER_ID=${userId}") {
+
+          // Build using Ukaab/Dockerfile, with Ukaab as the context
+          docker.build(
+            "android-build:${params.BUILD_TYPE}",
+            "-f Ukaab/Dockerfile --build-arg LOCAL_USER_ID=${userId} Ukaab"
+          ).inside("-e LOCAL_USER_ID=${userId}") {
             if (params.BUILD_TYPE == "Release") {
-              sh "cd android && ./gradlew assembleRelease"
+              sh "cd Ukaab && ./gradlew assembleRelease"
             } else {
-              sh "cd android && ./gradlew assembleDebug"
+              sh "cd Ukaab && ./gradlew assembleDebug"
             }
           }
         }
@@ -35,20 +39,18 @@ pipeline {
 
     stage('Archive APK') {
       steps {
-        archiveArtifacts artifacts: 'android/app/build/outputs/apk/**/*.apk', fingerprint: true
+        archiveArtifacts artifacts: 'Ukaab/app/build/outputs/apk/**/*.apk', fingerprint: true
       }
     }
   }
 
   post {
     success {
-      // 2) Report SUCCESS back to GitHub under the exact context name
       githubNotify context: 'continuous-integration/jenkins/pr-head',
                    status:  'SUCCESS',
                    credentialsId: env.GITHUB_CREDENTIALS
     }
     failure {
-      // 3) Report FAILURE back to GitHub
       githubNotify context: 'continuous-integration/jenkins/pr-head',
                    status:  'FAILURE',
                    credentialsId: env.GITHUB_CREDENTIALS
