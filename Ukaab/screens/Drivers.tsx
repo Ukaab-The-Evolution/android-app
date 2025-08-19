@@ -1,0 +1,70 @@
+import * as React from "react";
+import {FlatList, StyleSheet, TouchableNativeFeedback} from "react-native";
+import {
+    ButtonGradient,
+    Container,
+    ButtonText,
+    DriverContainer,
+    DriverPhotoPlaceholder, DriverName, DriverID
+} from "../styles/Drivers.ts";
+import {useNavigation} from "@react-navigation/native";
+
+const driverNames = [
+    "John Doe",
+    "Jane Smith",
+    "Mike Johnson",
+    "Emily Davis",
+    "Robert Brown",
+    "Linda Wilson",
+    "David Lee",
+    "Sophia Taylor",
+    "James White",
+    "Olivia Martin",
+    "William Thompson",
+    "Emma Garcia",
+    "Alexander Clark",
+    "Mia Lewis",
+    "Daniel Walker"
+];
+
+const data = Array.from({ length: 15 }, (_, i) => ({
+    id: Math.floor(1000 + Math.random() * 9000).toString(), // 4-digit ID
+    driver: driverNames[i] // assign driver name from the array
+}));
+
+const Drivers = () => {
+    const navigation = useNavigation();
+    return (
+        <Container>
+            <TouchableNativeFeedback onPress={() => navigation.navigate("Driver Registration")} useForeground={true}>
+                <ButtonGradient style={styles["button-drop-shadow"]} colors={["#578C7A", "#223931"]}>
+                    <ButtonText>Add to Fleet</ButtonText>
+                </ButtonGradient>
+            </TouchableNativeFeedback>
+            <FlatList
+                centerContent={true}
+                columnWrapperStyle={{gap: 16}}
+                contentContainerStyle={{gap: 16}}
+                numColumns={3} keyExtractor={item => item.id}
+                style={{width: "100%"}}
+                data={data}
+                renderItem={
+                ({ item }) => (
+                    <DriverContainer>
+                        <DriverPhotoPlaceholder/>
+                        <DriverName>{item.driver}</DriverName>
+                        <DriverID>ID: {item.id}</DriverID>
+                    </DriverContainer>
+                )
+            }/>
+        </Container>
+    );
+};
+
+const styles = StyleSheet.create({
+    "button-drop-shadow": {
+        boxShadow: "0px 6px 12px #0000003B"
+    }
+})
+
+export default Drivers;
