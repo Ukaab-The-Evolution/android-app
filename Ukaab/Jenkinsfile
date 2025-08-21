@@ -22,16 +22,38 @@ pipeline {
           // get a UID for file permissions inside the container
           def userId = sh(script: "id -u || echo 1000", returnStdout: true).trim()
 
-          // Build using Ukaab/Dockerfile, with Ukaab as the context
+
           docker.build(
             "android-build:${params.BUILD_TYPE}",
             "-f Ukaab/Dockerfile --build-arg LOCAL_USER_ID=${userId} Ukaab"
           ).inside("-e LOCAL_USER_ID=${userId}") {
-            if (params.BUILD_TYPE == "Release") {
-              sh "cd Ukaab && ./gradlew assembleRelease"
-            } else {
-              sh "cd Ukaab && ./gradlew assembleDebug"
-            }
+
+            sh '''
+              cd Ukaab
+
+              # Ensure node_modules exists
+              if [ ! -d "node_modules" ]; then
+                echo "Installing node modules..."
+                npm install --legacy-peer-deps
+              fi
+
+              # Generate android/ folder if not present
+              if [ ! -d "android" ]; then
+                echo "Android folder not found. Generating..."
+                npx react-native init tempApp --skip-install
+                mv tempApp/android .
+                rm -rf tempApp
+              fi
+
+              cd android
+              chmod +x gradlew
+
+              if [ "$BUILD_TYPE" = "Release" ]; then
+                ./gradlew assembleRelease
+              else
+                ./gradlew assembleDebug
+              fi
+            '''
           }
         }
       }
@@ -39,7 +61,8 @@ pipeline {
 
     stage('Archive APK') {
       steps {
-        archiveArtifacts artifacts: 'Ukaab/app/build/outputs/apk/**/*.apk', fingerprint: true
+
+        archiveArtifacts artifacts: 'Ukaab/android/app/build/outputs/apk/**/*.apk', fingerprint: true
       }
     }
   }

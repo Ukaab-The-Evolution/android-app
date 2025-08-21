@@ -68,13 +68,11 @@ RAILWAY_API_URL=https://your-api.up.railway.app
 
 # Other environment variables
 APP_ENV=development
+
+
 🚨 Make sure you never commit .env to the repository. It's ignored in .gitignore.
-
 import { createClient } from '@supabase/supabase-js';
-
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
-
-
 Paste it in the .env under RAILWAY_API_URL
 
 Use this base URL to connect to backend endpoints from your frontend code.
@@ -100,11 +98,8 @@ cd android
 Summary
 
 Clone the repo
-
 Install dependencies via npm install
-
 Create .env with Supabase and Railway credentials
-
 Run Metro bundler
 
 Run on Android via npx react-native run-android
