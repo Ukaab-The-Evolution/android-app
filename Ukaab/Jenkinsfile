@@ -19,7 +19,9 @@ pipeline {
     stage('Build via Docker') {
       steps {
         script {
+          // get a UID for file permissions inside the container
           def userId = sh(script: "id -u || echo 1000", returnStdout: true).trim()
+
 
           docker.build(
             "android-build:${params.BUILD_TYPE}",
@@ -59,6 +61,7 @@ pipeline {
 
     stage('Archive APK') {
       steps {
+
         archiveArtifacts artifacts: 'Ukaab/android/app/build/outputs/apk/**/*.apk', fingerprint: true
       }
     }
