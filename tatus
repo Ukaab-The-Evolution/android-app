@@ -1,0 +1,12 @@
+[33m186697f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge pull request #4 from Ukaab-The-Evolution/feature/ayan
+[33m24ebf40[m[33m ([m[1;31morigin/feature/ayan[m[33m)[m readme file
+[33m9d10090[m Fix Jenkinsfile path to gradlew
+[33mcdb961f[m Fix Jenkinsfile path to gradlew
+[33m1a7d0bb[m Fix Jenkinsfile path to gradlew
+[33m135f49e[m jenkins file
+[33m1d00776[m Initial commit with working Docker setup
+[33m61063e9[m Convert Ukaab folder into ordinary files
+[33m8ba604a[m setup for android team
+[33mae26ce5[m Delete README.md
+[33m8202dfb[m Delete .gitignore
+[33mac2c0d4[m[33m ([m[1;31morigin/feature/ata-ur-rehman[m[33m, [m[1;31morigin/feature/Muneha-adan[m[33m)[m Initial commit
