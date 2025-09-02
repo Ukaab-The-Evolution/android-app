@@ -77,17 +77,25 @@ class AuthService {
       const authToken = token || data.token;
       console.log('✅ Authentication successful with Render backend');
 
-      // Step 2: Store session data
-      await this.storeUserSession(data, authToken);
+      // Step 2: Store session data (non-blocking)
+      const storeSessionPromise = this.storeUserSession(data, authToken);
 
-      // Step 3: Optionally fetch additional user data from Supabase if needed
+      // Step 3: Fetch additional user data from Supabase (parallel, non-blocking)
       let userData = data.user || data;
-      if (data.user_id || data.id) {
-        const profileResult = await SupabaseService.getUserProfile(data.user_id || data.id);
-        if (profileResult.success) {
-          userData = { ...userData, ...profileResult.data };
-          console.log('✅ Enhanced user data fetched from Supabase');
-        }
+      const fetchProfilePromise = (data.user_id || data.id)
+        ? SupabaseService.getUserProfile(data.user_id || data.id)
+        : Promise.resolve({ success: false });
+
+      // Execute storage and profile fetch in parallel
+      const [, profileResult] = await Promise.all([
+        storeSessionPromise,
+        fetchProfilePromise
+      ]);
+
+      // Enhance user data if profile fetch was successful
+      if (profileResult.success) {
+        userData = { ...userData, ...profileResult.data };
+        console.log('✅ Enhanced user data fetched from Supabase');
       }
 
       return {

@@ -3,6 +3,7 @@ import { StyleSheet, TouchableNativeFeedback, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import AuthService, { LoginCredentials } from "../services/AuthService";
+import { useAuth } from "../contexts/AuthContext";
 import {
     MainContainer,
     LinearGradientContainer,
@@ -50,6 +51,8 @@ const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
     const navigation = useNavigation<StackNavigationProp<any>>();
 
+    const { login } = useAuth();
+
     const handleLogin = async () => {
         // Validate input fields
         if (!email.trim()) {
@@ -72,26 +75,48 @@ const Login = () => {
         setIsLoading(true);
 
         try {
-            const credentials: LoginCredentials = {
-                email: email.trim(),
-                password: password
-            };
-
             console.log('🔐 Attempting login...');
-            const response = await AuthService.login(credentials);
 
-            if (response.success) {
+            // Use AuthContext login function which handles the complete flow
+            const success = await login(email.trim(), password);
+
+            if (success) {
                 console.log('✅ Login successful');
-                Alert.alert("Success", "Login successful!", [
-                    { text: "OK", onPress: () => navigation.navigate("Home" as never) }
-                ]);
+
+                // Navigate immediately without showing alert first
+                navigation.navigate("Main App" as never);
+
+                // Show success message after navigation (non-blocking)
+                setTimeout(() => {
+                    Alert.alert("Success", "Welcome back!");
+                }, 100);
             } else {
-                console.error('❌ Login failed:', response.error);
-                Alert.alert("Login Failed", response.error || "Please try again");
+                console.error('❌ Login failed');
+                Alert.alert(
+                    "Login Failed",
+                    "Invalid email or password. Please check your credentials and try again.",
+                    [{ text: "OK" }]
+                );
             }
         } catch (error: any) {
             console.error('💥 Login error:', error);
-            Alert.alert("Error", "Network error. Please try again.");
+
+            // Handle specific error types
+            let errorMessage = "An unexpected error occurred. Please try again.";
+
+            if (error.message?.includes('network') || error.message?.includes('fetch')) {
+                errorMessage = "Network error. Please check your internet connection and try again.";
+            } else if (error.message?.includes('timeout')) {
+                errorMessage = "Request timed out. Please try again.";
+            } else if (error.response?.status === 401) {
+                errorMessage = "Invalid credentials. Please check your email and password.";
+            } else if (error.response?.status === 429) {
+                errorMessage = "Too many login attempts. Please wait a moment and try again.";
+            } else if (error.response?.status >= 500) {
+                errorMessage = "Server error. Please try again later.";
+            }
+
+            Alert.alert("Login Error", errorMessage, [{ text: "OK" }]);
         } finally {
             setIsLoading(false);
         }
@@ -110,32 +135,56 @@ const Login = () => {
         setIsLoading(true);
 
         try {
+            console.log('🔐 Attempting Google Sign-In...');
             const response = await AuthService.loginWithGoogle();
 
             if (response.success) {
+                console.log('✅ Google Sign-In successful');
+
+                navigation.navigate("Main App" as never);
+
                 Alert.alert(
-                    "Google Sign-In Successful",
-                    "Welcome!",
-                    [
-                        {
-                            text: "Continue",
-                            onPress: () => navigation.navigate("Main App")
-                        }
-                    ]
+                    "Success",
+                    "Welcome! You've successfully signed in with Google.",
+                    [{ text: "OK" }]
                 );
             } else {
                 if (response.error !== 'Google Sign-In was cancelled') {
+                    console.error('❌ Google Sign-In failed:', response.error);
+
+                    let errorMessage = response.error || "Unable to sign in with Google. Please try again.";
+
+                    // Handle specific Google Sign-In errors
+                    if (response.error?.includes('network')) {
+                        errorMessage = "Network error. Please check your internet connection and try again.";
+                    } else if (response.error?.includes('SIGN_IN_CANCELLED')) {
+                        // Don't show error for user cancellation
+                        return;
+                    } else if (response.error?.includes('SIGN_IN_REQUIRED')) {
+                        errorMessage = "Google Sign-In is required. Please try again.";
+                    }
+
                     Alert.alert(
                         "Google Sign-In Failed",
-                        response.error || "Unable to sign in with Google. Please try again.",
+                        errorMessage,
                         [{ text: "OK" }]
                     );
                 }
             }
         } catch (error: any) {
+            console.error('💥 Google Sign-In error:', error);
+
+            let errorMessage = "Unable to connect to Google services. Please try again later.";
+
+            if (error.message?.includes('network') || error.message?.includes('fetch')) {
+                errorMessage = "Network error. Please check your internet connection and try again.";
+            } else if (error.message?.includes('timeout')) {
+                errorMessage = "Request timed out. Please try again.";
+            }
+
             Alert.alert(
                 "Google Sign-In Error",
-                "Unable to connect to Google services. Please try again later.",
+                errorMessage,
                 [{ text: "OK" }]
             );
         } finally {
@@ -180,6 +229,7 @@ const Login = () => {
                                 onChangeText={setEmail}
                                 keyboardType="email-address"
                                 autoCapitalize="none"
+                                editable={!isLoading}
                             />
                         </TextField>
                     </TextFieldContainer>
@@ -197,6 +247,7 @@ const Login = () => {
                                         onChangeText={setPassword}
                                         secureTextEntry={!showPassword}
                                         style={{ flex: 1 }}
+                                        editable={!isLoading}
                                     />
                                 </PasswordInputContainer>
                                 <TextInputIconContainer>
@@ -210,8 +261,15 @@ const Login = () => {
                     </PasswordFieldContainer>
 
                     {/* Login Button */}
-                    <TouchableNativeFeedback useForeground={true} onPress={handleLogin}>
-                        <ButtonGradient style={styles["button-drop-shadow"]}>
+                    <TouchableNativeFeedback
+                        useForeground={true}
+                        onPress={handleLogin}
+                        disabled={isLoading}
+                    >
+                        <ButtonGradient style={[
+                            styles["button-drop-shadow"],
+                            isLoading && { opacity: 0.7 }
+                        ]}>
                             <ButtonText>{isLoading ? "Logging in..." : "Login"}</ButtonText>
                         </ButtonGradient>
                     </TouchableNativeFeedback>
@@ -222,6 +280,7 @@ const Login = () => {
                             <CheckboxContainer
                                 onPress={() => setRememberMe(!rememberMe)}
                                 activeOpacity={0.7}
+                                disabled={isLoading}
                             >
                                 {rememberMe && (
                                     <EyeIcon color="#3B6255" size={8} />
@@ -229,7 +288,10 @@ const Login = () => {
                             </CheckboxContainer>
                             <RememberMeText>Remember me</RememberMeText>
                         </RememberMeContainer>
-                        <TouchableNativeFeedback onPress={handleForgotPassword}>
+                        <TouchableNativeFeedback
+                            onPress={handleForgotPassword}
+                            disabled={isLoading}
+                        >
                             <ForgotPasswordLink>Forgot Password?</ForgotPasswordLink>
                         </TouchableNativeFeedback>
                     </RememberMeRow>
@@ -243,9 +305,16 @@ const Login = () => {
                         <OrDividerLine />
                     </OrDividerRow>
 
-                    <GoogleButton onPress={handleGoogleSignIn} activeOpacity={0.7}>
+                    <GoogleButton
+                        onPress={handleGoogleSignIn}
+                        activeOpacity={0.7}
+                        disabled={isLoading}
+                        style={isLoading ? { opacity: 0.7 } : {}}
+                    >
                         <GoogleIcon source={require("../assets/icons/google1.png")} />
-                        <GoogleText>Continue with Google</GoogleText>
+                        <GoogleText>
+                            {isLoading ? "Signing in..." : "Continue with Google"}
+                        </GoogleText>
                     </GoogleButton>
                 </OrSection>
             </FormContainer>
