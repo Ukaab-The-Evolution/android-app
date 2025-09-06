@@ -1,5 +1,6 @@
 import styled from "styled-components/native";
 import LinearGradient from "react-native-linear-gradient";
+import {TouchableNativeFeedback} from "react-native";
 
 
 
@@ -51,8 +52,15 @@ export const ButtonText = styled.Text`
     font-size: 16px;
 `
 
+export const FileUploadButtonTouchableNativeFeedback = styled(TouchableNativeFeedback).attrs({
+    useForeground: true
+})`
+    
 
-export const FileUploadButton = styled.TouchableOpacity`
+`
+
+
+export const FileUploadButton = styled.View`
     width: fit-content;
     padding: 8px 16px;
     background: #B2D7CA44;

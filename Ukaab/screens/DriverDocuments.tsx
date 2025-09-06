@@ -1,13 +1,26 @@
 import {
     Container, ButtonText, ButtonGradient, Title, SubTitle, FileUploadButton,
-    FileUploadIcon, FileUploadButtonText, FileUploaderContainer, FileUploaderLabel
+    FileUploadIcon, FileUploadButtonText, FileUploaderContainer, FileUploaderLabel,
+    FileUploadButtonTouchableNativeFeedback
 } from "../styles/DriverDocuments.ts"
 import {StyleSheet, TouchableNativeFeedback} from "react-native";
 import DoubleChevronRightIcon from "../icons/DoubleChevronRightIcon.tsx";
 import * as React from "react";
+import {launchImageLibrary} from "react-native-image-picker";
 
 
 const DriverDocuments = () => {
+    const selectCNICFrontImage = async () => {
+        try {
+            const result = await launchImageLibrary({
+                mediaType: "photo"
+            });
+            console.log(result);
+        }
+        catch (error) {
+            return
+        }
+    }
     return (
         <Container>
             <Title>Upload</Title>
@@ -16,12 +29,14 @@ const DriverDocuments = () => {
                 <FileUploaderLabel>
                     Front
                 </FileUploaderLabel>
-                <FileUploadButton>
-                    <FileUploadIcon source={require('../assets/icons/UploadCloud.png')}/>
-                    <FileUploadButtonText>
-                        Pdf/png/jpg size
-                    </FileUploadButtonText>
-                </FileUploadButton>
+                <FileUploadButtonTouchableNativeFeedback onPress={selectCNICFrontImage}>
+                    <FileUploadButton>
+                        <FileUploadIcon source={require('../assets/icons/UploadCloud.png')}/>
+                        <FileUploadButtonText>
+                            Pdf/png/jpg size
+                        </FileUploadButtonText>
+                    </FileUploadButton>
+                </FileUploadButtonTouchableNativeFeedback>
             </FileUploaderContainer>
             <FileUploaderContainer>
                 <FileUploaderLabel>
