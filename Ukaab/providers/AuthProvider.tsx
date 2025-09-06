@@ -1,6 +1,7 @@
 import {createContext, PropsWithChildren, useEffect, useMemo} from "react";
 import {GoogleSignin} from "@react-native-google-signin/google-signin";
 import AuthService, {AuthInterface} from "../services/AuthService.ts";
+import Config from "react-native-config";
 
 export const AuthContext = createContext<AuthInterface | null>(null)
 
@@ -10,7 +11,7 @@ const AuthProvider = ({children}: PropsWithChildren) => {
     useEffect(() => {
         // Configure Google Sign-In with your Web Client ID
         GoogleSignin.configure({
-            webClientId: "680987785000-el7nsp7c8ni553i4odauo8clsndj853i.apps.googleusercontent.com",
+            webClientId: Config.GOOGLE_WEB_CLIENT_ID,
         });
 
     }, []);
