@@ -4,6 +4,7 @@ import {createNavigationContainerRef, LinkingOptions, NavigationContainer} from 
 import {BottomTabNavigator} from "./BottomTabNavigator.tsx";
 import ForgotPassword from "../screens/ForgotPassword.tsx";
 import ResetPassword from "../screens/ResetPassword.tsx";
+<<<<<<< HEAD
 import Register from "../screens/Register.tsx";
 import AyanGetStarted from "../screens/AyanGetStarted.tsx";
 import ChooseRole from "../screens/ChooseRole.tsx";
@@ -11,6 +12,11 @@ import AyanLogin from "../screens/AyanLogin.tsx";
 import {useContext, useEffect} from "react";
 import {AyanAuthContext} from "../providers/AyanAuthProvider.tsx";
 import {Linking} from "react-native";
+=======
+import GetStarted from "../screens/GetStarted.tsx";
+import RoleSelection from "../screens/RoleSelection.tsx";
+import Login from "../screens/Login.tsx";
+>>>>>>> origin/main
 
 export type AuthStackNavigatorParamList = {
     "OTP Verification": { email: string };
@@ -29,6 +35,7 @@ export const navigationRef = createNavigationContainerRef<AuthStackNavigatorPara
 
 
 const AuthStackNavigator = () => {
+<<<<<<< HEAD
     const authProvider = useContext(AyanAuthContext)
 
     const linking: LinkingOptions<ReactNavigation.RootParamList> = {
@@ -77,6 +84,19 @@ const AuthStackNavigator = () => {
             </Navigator.Navigator>
         </NavigationContainer>
     )
+=======
+    return <NavigationContainer>
+        <Navigator.Navigator initialRouteName="Get Started" screenOptions={{ headerShown: false }}>
+            <Navigator.Screen name="Get Started" component={GetStarted}/>
+            <Navigator.Screen name="Role Selection" component={RoleSelection}/>
+            <Navigator.Screen name="Login" component={Login}/>
+            <Navigator.Screen name="OTP Verification" component={OTPVerification}/>
+            <Navigator.Screen name="Forgot Password" component={ForgotPassword}/>
+            <Navigator.Screen name="Reset Password" component={ResetPassword}/>
+            <Navigator.Screen name="Main App" component={BottomTabNavigator}/>
+        </Navigator.Navigator>
+    </NavigationContainer>
+>>>>>>> origin/main
 }
 
 

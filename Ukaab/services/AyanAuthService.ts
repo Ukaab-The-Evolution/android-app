@@ -1,6 +1,6 @@
 import Config from "react-native-config";
 import {GoogleSignin} from "@react-native-google-signin/google-signin";
-import {ayan_supabase} from "../supabase.ts";
+import {supabase} from "../supabase.ts";
 import {User} from "@supabase/supabase-js";
 import * as Keychain from 'react-native-keychain';
 
@@ -74,8 +74,6 @@ class AyanAuthService implements AyanAuthInterface {
     forgotPassword = async (email: string): Promise<any> => {
         const headers = {
             "Content-Type": "application/json",
-            "apikey": Config.SUPABASE_ANON_KEY!,
-            "Authorization": `Bearer ${Config.SUPABASE_ANON_KEY!}`
         }
 
         const response = await fetch(`${Config.API_URL}/api/v1/auth/forgotPassword`, {
@@ -91,8 +89,6 @@ class AyanAuthService implements AyanAuthInterface {
     verifyOtp = async (email: string, otp: string) => {
         const headers = {
             "Content-Type": "application/json",
-            "apikey": Config.SUPABASE_ANON_KEY!,
-            "Authorization": `Bearer ${Config.SUPABASE_ANON_KEY!}`
         }
 
         const body = {
@@ -150,8 +146,6 @@ class AyanAuthService implements AyanAuthInterface {
     login = async (form: UserLogin) => {
         const headers = {
             "Content-Type": "application/json",
-            "apikey": Config.SUPABASE_ANON_KEY!,
-            "Authorization": `Bearer ${Config.SUPABASE_ANON_KEY!}`
         }
 
         const response = await fetch(`${Config.API_URL}/api/v1/auth/login`, {
@@ -176,7 +170,7 @@ class AyanAuthService implements AyanAuthInterface {
         const idToken = userInfo.data?.idToken;
         // Send token to Supabase for authentication
         if (idToken) {
-            const {data, error} = await ayan_supabase.auth.signInWithIdToken({
+            const {data, error} = await supabase.auth.signInWithIdToken({
                 provider: 'google',
                 token: idToken,
             });
@@ -194,8 +188,8 @@ class AyanAuthService implements AyanAuthInterface {
                 }
                 const headers = {
                     "Content-Type": "application/json",
-                    "apikey": Config.SUPABASE_ANON_KEY!,
-                    "Authorization": `Bearer ${Config.SUPABASE_ANON_KEY!}`
+                    "apikey": Config.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+                    "Authorization": `Bearer ${Config.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`
                 }
                 const response = await fetch(`${Config.SUPABASE_URL}/auth/v1/callback`,
                     {method: "POST", headers: headers, body: JSON.stringify(body)});

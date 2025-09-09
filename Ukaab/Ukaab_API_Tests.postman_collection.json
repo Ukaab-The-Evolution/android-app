@@ -1,0 +1,406 @@
+{
+  "info": {
+    "name": "Ukaab API Tests - Complete Flow",
+    "description": "Complete API testing with Signup + OTP + Login flow",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://web-app-4n1r.onrender.com/api/v1"
+    },
+    {
+      "key": "authBaseUrl",
+      "value": "https://web-app-4n1r.onrender.com/api/v1/auth"
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "driverToken",
+      "value": ""
+    },
+    {
+      "key": "adminUserId",
+      "value": ""
+    },
+    {
+      "key": "driverUserId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Complete User Creation Flow",
+      "item": [
+        {
+          "name": "Step 1: Signup Admin User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.data && jsonData.data.user_id) {",
+                  "        pm.collectionVariables.set('adminUserId', jsonData.data.user_id);",
+                  "        console.log('Admin user_id saved:', jsonData.data.user_id);",
+                  "        console.log('Response:', JSON.stringify(jsonData, null, 2));",
+                  "    } else if (jsonData.user_id) {",
+                  "        pm.collectionVariables.set('adminUserId', jsonData.user_id);",
+                  "        console.log('Admin user_id saved:', jsonData.user_id);",
+                  "    }",
+                  "} else {",
+                  "    console.log('Signup failed. Status:', pm.response.code);",
+                  "    console.log('Response:', pm.response.text());",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin.test@ukaab.com\",\n  \"password\": \"AdminPass123!\",\n  \"user_type\": \"admin\",\n  \"full_name\": \"Test Admin User\"\n}"
+            },
+            "url": {
+              "raw": "{{authBaseUrl}}/signup",
+              "host": ["{{authBaseUrl}}"],
+              "path": ["signup"]
+            }
+          }
+        },
+        {
+          "name": "Step 2: Verify Admin OTP (MANUAL)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.token || jsonData.data?.token) {",
+                  "        const token = jsonData.token || jsonData.data.token;",
+                  "        pm.collectionVariables.set('adminToken', token);",
+                  "        console.log('Admin token saved after OTP verification:', token);",
+                  "    }",
+                  "} else {",
+                  "    console.log('OTP verification failed. Response:', pm.response.text());",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": {{adminUserId}},\n  \"otp_code\": \"REPLACE_WITH_ACTUAL_OTP\"\n}"
+            },
+            "url": {
+              "raw": "{{authBaseUrl}}/verify-otp",
+              "host": ["{{authBaseUrl}}"],
+              "path": ["verify-otp"]
+            }
+          }
+        },
+        {
+          "name": "Step 3: Login Admin (After OTP)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.token || jsonData.data?.token) {",
+                  "        const token = jsonData.token || jsonData.data.token;",
+                  "        pm.collectionVariables.set('adminToken', token);",
+                  "        console.log('Admin login successful. Token saved:', token);",
+                  "    }",
+                  "} else {",
+                  "    console.log('Login failed. Response:', pm.response.text());",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin.test@ukaab.com\",\n  \"password\": \"AdminPass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{authBaseUrl}}/login",
+              "host": ["{{authBaseUrl}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "Step 4: Signup Driver User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.data && jsonData.data.user_id) {",
+                  "        pm.collectionVariables.set('driverUserId', jsonData.data.user_id);",
+                  "        console.log('Driver user_id saved:', jsonData.data.user_id);",
+                  "    } else if (jsonData.user_id) {",
+                  "        pm.collectionVariables.set('driverUserId', jsonData.user_id);",
+                  "        console.log('Driver user_id saved:', jsonData.user_id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"driver.test@ukaab.com\",\n  \"password\": \"DriverPass123!\",\n  \"user_type\": \"driver\",\n  \"full_name\": \"Test Driver User\",\n  \"cnic\": \"12345-6789012-3\",\n  \"owns_company\": false\n}"
+            },
+            "url": {
+              "raw": "{{authBaseUrl}}/signup",
+              "host": ["{{authBaseUrl}}"],
+              "path": ["signup"]
+            }
+          }
+        },
+        {
+          "name": "Step 5: Verify Driver OTP (MANUAL)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.token || jsonData.data?.token) {",
+                  "        const token = jsonData.token || jsonData.data.token;",
+                  "        pm.collectionVariables.set('driverToken', token);",
+                  "        console.log('Driver token saved after OTP verification:', token);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": {{driverUserId}},\n  \"otp_code\": \"REPLACE_WITH_ACTUAL_OTP\"\n}"
+            },
+            "url": {
+              "raw": "{{authBaseUrl}}/verify-otp",
+              "host": ["{{authBaseUrl}}"],
+              "path": ["verify-otp"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "OTP Management",
+      "item": [
+        {
+          "name": "Resend Admin OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": {{adminUserId}}\n}"
+            },
+            "url": {
+              "raw": "{{authBaseUrl}}/resend-otp",
+              "host": ["{{authBaseUrl}}"],
+              "path": ["resend-otp"]
+            }
+          }
+        },
+        {
+          "name": "Resend Driver OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": {{driverUserId}}\n}"
+            },
+            "url": {
+              "raw": "{{authBaseUrl}}/resend-otp",
+              "host": ["{{authBaseUrl}}"],
+              "path": ["resend-otp"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Direct Login Tests",
+      "item": [
+        {
+          "name": "Admin Login (If Already Verified)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.token || jsonData.data?.token) {",
+                  "        const token = jsonData.token || jsonData.data.token;",
+                  "        pm.collectionVariables.set('adminToken', token);",
+                  "        console.log('Admin login successful. Token:', token);",
+                  "    }",
+                  "} else {",
+                  "    console.log('Login failed:', pm.response.text());",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin.test@ukaab.com\",\n  \"password\": \"AdminPass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{authBaseUrl}}/login",
+              "host": ["{{authBaseUrl}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "Driver Login (If Already Verified)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"driver.test@ukaab.com\",\n  \"password\": \"DriverPass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{authBaseUrl}}/login",
+              "host": ["{{authBaseUrl}}"],
+              "path": ["login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Protected Routes",
+      "item": [
+        {
+          "name": "Get Admin Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{authBaseUrl}}/me",
+              "host": ["{{authBaseUrl}}"],
+              "path": ["me"]
+            }
+          }
+        },
+        {
+          "name": "Get Driver Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{driverToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{authBaseUrl}}/me",
+              "host": ["{{authBaseUrl}}"],
+              "path": ["me"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

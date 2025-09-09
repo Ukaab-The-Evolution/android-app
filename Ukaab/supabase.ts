@@ -1,9 +1,10 @@
+import 'react-native-url-polyfill/auto';
 import { createClient } from '@supabase/supabase-js';
 import Config from 'react-native-config';
 
 // Environment variables with fallbacks for development
-const supabaseUrl = Config.SUPABASE_URL;
-const supabaseAnonKey = Config.SUPABASE_ANON_KEY;
+const supabaseUrl = Config.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = Config.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 // Validate configuration
 if (!supabaseUrl || !supabaseAnonKey) {
