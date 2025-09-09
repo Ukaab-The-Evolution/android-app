@@ -1,6 +1,6 @@
 import Config from "react-native-config";
 import {GoogleSignin} from "@react-native-google-signin/google-signin";
-import {ayan_supabase} from "../ayan_supabase.ts";
+import {ayan_supabase} from "../supabase.ts";
 import {User} from "@supabase/supabase-js";
 import * as Keychain from 'react-native-keychain';
 
