@@ -15,7 +15,7 @@ import {useNavigation} from "@react-navigation/native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {AuthStackNavigatorParamList} from "../navigators/AuthStackNavigator.tsx";
 
-const GetStarted = () => {
+const AyanGetStarted = () => {
     const navigation = useNavigation<NativeStackNavigationProp<AuthStackNavigatorParamList>>();
     return (
         <GradientMainContainer  end={{x: 0.5, y: 0}} start={{x: 0.5, y: 1}} locations={[0, 0.14, 0.3, 0.58, 1]}
@@ -53,4 +53,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default GetStarted;
+export default AyanGetStarted;

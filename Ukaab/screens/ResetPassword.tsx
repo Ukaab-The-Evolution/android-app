@@ -10,9 +10,9 @@ import {Formik, FormikHelpers} from "formik";
 import AuthForm from "../layout/AuthForm.tsx";
 import FormButton from "../components/FormButton.tsx";
 import PasswordInput from "../components/PasswordInput.tsx";
-import {PasswordUpdate} from "../services/AuthService.ts";
+import {PasswordUpdate} from "../services/AyanAuthService.ts";
 import {useContext} from "react";
-import {AuthContext} from "../providers/AuthProvider.tsx";
+import {AyanAuthContext} from "../providers/AyanAuthProvider.tsx";
 import {StackScreenProps} from "@react-navigation/stack";
 import {AuthStackNavigatorParamList} from "../navigators/AuthStackNavigator.tsx";
 
@@ -32,7 +32,7 @@ type ResetPasswordProps = StackScreenProps<AuthStackNavigatorParamList, "Reset P
 
 const ResetPassword = ({route}: ResetPasswordProps) => {
     const initialValues: PasswordUpdate = {password: "", confirmPassword: ""};
-    const authProvider = useContext(AuthContext)
+    const authProvider = useContext(AyanAuthContext)
 
     const hasUppercase = (password: string) => /[A-Z]/.test(password);
     const hasMinLength = (password: string) => password.length >= 8;

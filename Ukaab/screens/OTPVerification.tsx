@@ -10,7 +10,7 @@ import {AuthStackNavigatorParamList} from "../navigators/AuthStackNavigator.tsx"
 import * as Yup from "yup"
 import {Formik, FormikHelpers} from "formik";
 import {useContext} from "react";
-import {AuthContext} from "../providers/AuthProvider.tsx";
+import {AyanAuthContext} from "../providers/AyanAuthProvider.tsx";
 import AuthForm from "../layout/AuthForm.tsx";
 import FormButton from "../components/FormButton.tsx";
 
@@ -24,7 +24,7 @@ const OTPSchema = Yup.object().shape({
 
 const OTPVerificationScreen = ({route}: OTPVerificationProps) => {
     const {email} = route.params;
-    const authProvider = useContext(AuthContext)
+    const authProvider = useContext(AyanAuthContext)
 
     const verifyOTP = async (values: { otp: string }, {setStatus}: FormikHelpers<{ otp: string }>) => {
         try {

@@ -24,9 +24,9 @@ import {useNavigation} from "@react-navigation/native";
 import {AuthStackNavigatorParamList} from "../navigators/AuthStackNavigator.tsx";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {StackScreenProps} from "@react-navigation/stack";
-import {AuthContext} from "../providers/AuthProvider.tsx";
+import {AyanAuthContext} from "../providers/AyanAuthProvider.tsx";
 import ContinueWithGoogleForm from "../components/ContinueWithGoogleForm.tsx";
-import {UserRegister} from "../services/AuthService.ts";
+import {UserRegister} from "../services/AyanAuthService.ts";
 import TextField from "../components/TextField.tsx"
 import PasswordInput from "../components/PasswordInput.tsx";
 import FormButton from "../components/FormButton.tsx";
@@ -49,7 +49,7 @@ const RegisterSchema = Yup.object({
 
 const Register = ({route}: RegisterProps) => {
     const navigation = useNavigation<NativeStackNavigationProp<AuthStackNavigatorParamList>>();
-    const authProvider = useContext(AuthContext)
+    const authProvider = useContext(AyanAuthContext)
     const initialValues: UserRegister = {fullName: "", email: "", phone: "", password: "", companyCode: ""}
 
 
@@ -91,7 +91,7 @@ const Register = ({route}: RegisterProps) => {
 
             <Row style={styles["description-container"]}>
                 <FormDescription>Already have an account?</FormDescription>
-                <TouchableOpacity onPress={() => navigation.navigate("Login", route.params)}>
+                <TouchableOpacity onPress={() => navigation.navigate("Ayan Login", route.params)}>
                     <LoginLink>Login</LoginLink>
                 </TouchableOpacity>
             </Row>

@@ -11,16 +11,16 @@ import {useNavigation} from "@react-navigation/native";
 import {AuthStackNavigatorParamList} from "../navigators/AuthStackNavigator.tsx";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {StackScreenProps} from "@react-navigation/stack";
-import {AuthContext} from "../providers/AuthProvider.tsx";
+import {AyanAuthContext} from "../providers/AyanAuthProvider.tsx";
 import ContinueWithGoogleForm from "../components/ContinueWithGoogleForm.tsx";
-import {UserLogin} from "../services/AuthService.ts";
+import {UserLogin} from "../services/AyanAuthService.ts";
 import FormButton from "../components/FormButton.tsx";
 import AuthForm from "../layout/AuthForm.tsx";
 import PasswordInput from "../components/PasswordInput.tsx";
 import TextField from "../components/TextField.tsx";
 
 
-type LoginProps = StackScreenProps<AuthStackNavigatorParamList, "Login">;
+type LoginProps = StackScreenProps<AuthStackNavigatorParamList, "Ayan Login">;
 
 
 const LoginSchema = Yup.object({
@@ -31,9 +31,9 @@ const LoginSchema = Yup.object({
         .required("Password is required"),
 })
 
-const Login = ({route}: LoginProps) => {
+const AyanLogin = ({route}: LoginProps) => {
     const navigation = useNavigation<NativeStackNavigationProp<AuthStackNavigatorParamList>>();
-    const authProvider = useContext(AuthContext);
+    const authProvider = useContext(AyanAuthContext);
     const [rememberMe, setRememberMe] = useState<boolean>(false);
 
     const toggleRememberMe = () => {
@@ -61,7 +61,7 @@ const Login = ({route}: LoginProps) => {
             </FormLogoContainer>
 
             <Row>
-                <FormTitle>Login</FormTitle>
+                <FormTitle>AyanLogin</FormTitle>
             </Row>
 
             <Row style={styles["description-container"]}>
@@ -86,7 +86,7 @@ const Login = ({route}: LoginProps) => {
                                        error={errors.password && touched.password ? errors.password : null}/>
 
                         <FormButton onPress={() => handleSubmit()} isSubmitting={isSubmitting}
-                                    status={status} title="Login"/>
+                                    status={status} title="AyanLogin"/>
 
                         <Row style={[styles["justify-between"], styles["mt-20"]]}>
                             <Row style={styles["gap-10"]}>
@@ -136,4 +136,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Login
+export default AyanLogin

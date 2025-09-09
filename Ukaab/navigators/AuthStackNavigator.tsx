@@ -5,21 +5,21 @@ import {BottomTabNavigator} from "./BottomTabNavigator.tsx";
 import ForgotPassword from "../screens/ForgotPassword.tsx";
 import ResetPassword from "../screens/ResetPassword.tsx";
 import Register from "../screens/Register.tsx";
-import GetStarted from "../screens/GetStarted.tsx";
+import AyanGetStarted from "../screens/AyanGetStarted.tsx";
 import ChooseRole from "../screens/ChooseRole.tsx";
-import Login from "../screens/Login.tsx";
+import AyanLogin from "../screens/AyanLogin.tsx";
 import {useContext, useEffect} from "react";
-import {AuthContext} from "../providers/AuthProvider.tsx";
+import {AyanAuthContext} from "../providers/AyanAuthProvider.tsx";
 import {Linking} from "react-native";
 
 export type AuthStackNavigatorParamList = {
     "OTP Verification": { email: string };
     "Register": { role: "Driver" | "Shipper" | "Company" };
-    "Login": { role: "Driver" | "Shipper" | "Company" };
+    "Ayan Login": { role: "Driver" | "Shipper" | "Company" };
     "Forgot Password"?: never;
     "Reset Password": { token: string };
     "Main App"?: never;
-    "Get Started"?: never;
+    "Ayan Get Started"?: never;
     "Choose Role"?: never;
 };
 
@@ -29,7 +29,7 @@ export const navigationRef = createNavigationContainerRef<AuthStackNavigatorPara
 
 
 const AuthStackNavigator = () => {
-    const authProvider = useContext(AuthContext)
+    const authProvider = useContext(AyanAuthContext)
 
     const linking: LinkingOptions<ReactNavigation.RootParamList> = {
         prefixes: ["https://web-app-4n1r.onrender.com"],
@@ -65,15 +65,15 @@ const AuthStackNavigator = () => {
     }, []);
     return (
         <NavigationContainer ref={navigationRef} linking={linking}>
-            <Navigator.Navigator initialRouteName={authProvider?.authenticated ? "Main App" : "Get Started"} screenOptions={{headerShown: false}}>
+            <Navigator.Navigator initialRouteName={authProvider?.authenticated ? "Main App" : "Ayan Get Started"} screenOptions={{headerShown: false}}>
                 <Navigator.Screen name="OTP Verification" component={OTPVerification}/>
                 <Navigator.Screen name="Forgot Password" component={ForgotPassword}/>
                 <Navigator.Screen name="Main App" component={BottomTabNavigator}/>
                 <Navigator.Screen name="Reset Password" component={ResetPassword}/>
                 <Navigator.Screen name="Register" component={Register}/>
-                <Navigator.Screen name="Get Started" component={GetStarted}/>
+                <Navigator.Screen name="Ayan Get Started" component={AyanGetStarted}/>
                 <Navigator.Screen name="Choose Role" component={ChooseRole}/>
-                <Navigator.Screen name="Login" component={Login}/>
+                <Navigator.Screen name="Ayan Login" component={AyanLogin}/>
             </Navigator.Navigator>
         </NavigationContainer>
     )

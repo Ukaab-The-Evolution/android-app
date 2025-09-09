@@ -14,11 +14,11 @@ import {Modal, StyleSheet, TouchableNativeFeedback, View} from "react-native";
 import BasicSpinner from "./BasicSpinner.tsx";
 import CheckIcon from "../icons/CheckIcon.tsx";
 import {useContext, useState} from "react";
-import {AuthContext} from "../providers/AuthProvider.tsx";
+import {AyanAuthContext} from "../providers/AyanAuthProvider.tsx";
 
 const ContinueWithGoogleForm = () => {
     const [googleFormVisible, setGoogleFormVisible] = useState<boolean>(false)
-    const authProvider = useContext(AuthContext);
+    const authProvider = useContext(AyanAuthContext);
 
     const continueWithGoogle = async (values: { name: string }, {setStatus}: FormikHelpers<{ name: string }>) => {
         try {

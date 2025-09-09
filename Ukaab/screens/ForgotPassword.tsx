@@ -11,7 +11,7 @@ import {useNavigation} from "@react-navigation/native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {AuthStackNavigatorParamList} from "../navigators/AuthStackNavigator.tsx";
 import {useContext} from "react";
-import {AuthContext} from "../providers/AuthProvider.tsx";
+import {AyanAuthContext} from "../providers/AyanAuthProvider.tsx";
 import FormButton from "../components/FormButton.tsx";
 import AuthForm from "../layout/AuthForm.tsx";
 import TextField from "../components/TextField.tsx";
@@ -22,7 +22,7 @@ const ForgotPasswordSchema = Yup.object({
 
 const ForgotPassword = () => {
     const navigation = useNavigation<NativeStackNavigationProp<AuthStackNavigatorParamList>>()
-    const authProvider = useContext(AuthContext)
+    const authProvider = useContext(AyanAuthContext)
     const forgotPassword = async (values: { email: string }, {setStatus}: FormikHelpers<{ email: string }>) => {
         try {
             const data = authProvider?.forgotPassword(values.email)

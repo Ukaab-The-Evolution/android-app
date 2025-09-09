@@ -4,7 +4,7 @@ import {supabase} from "../supabase.ts";
 import {User} from "@supabase/supabase-js";
 import * as Keychain from 'react-native-keychain';
 
-export interface AuthInterface {
+export interface AyanAuthInterface {
     register: (form: UserRegister, userType: "Driver" | "Company" | "Shipper") => Promise<any>;
     login: (form: UserLogin) => Promise<any>;
     continueWithGoogle: (values: { name: string }) => Promise<User | undefined>;
@@ -32,7 +32,7 @@ export interface PasswordUpdate {
     password: string;
 }
 
-class AuthService implements AuthInterface {
+class AyanAuthService implements AyanAuthInterface {
 
     token = async () => {
         try {
@@ -212,4 +212,4 @@ class AuthService implements AuthInterface {
 }
 
 
-export default AuthService
+export default AyanAuthService

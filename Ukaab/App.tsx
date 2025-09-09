@@ -3,15 +3,15 @@ import Theme from "./Theme.ts";
 import {ThemeProvider} from "styled-components/native";
 import AuthStackNavigator from "./navigators/AuthStackNavigator.tsx";
 import 'react-native-url-polyfill/auto'
-import AuthProvider from "./providers/AuthProvider.tsx";
+import AyanAuthProvider from "./providers/AyanAuthProvider.tsx";
 
 
 const App = () => {
     return (
         <ThemeProvider theme={Theme}>
-            <AuthProvider>
+            <AyanAuthProvider>
                 <AuthStackNavigator/>
-            </AuthProvider>
+            </AyanAuthProvider>
         </ThemeProvider>
     );
 };
