@@ -7,7 +7,7 @@ import {
     Title,
     Description, ButtonGradient, ButtonText, Button, Image, SecondaryTitle, SecondaryDescription, SupportLink,
     SupportLinkText
-} from "../styles/GetStarted.ts";
+} from "../styles/AyanGetStarted.ts";
 import DoubleChevronRightIcon from "../icons/DoubleChevronRightIcon.tsx";
 import { StyleSheet } from "react-native";
 import SupportAgentIcon from "../icons/SupportAgentIcon.tsx";

@@ -1,7 +1,7 @@
 import {
     FormDescription, FormLogo, FormLogoContainer, FormLogoText, FormTitle, Row,
     DividerContainer, Divider, DividerText, LoginLink, RememberMeCheckBox, RememberMeCheckBoxButton, TextFieldLabel
-} from "../styles/Login.ts";
+} from "../styles/AyanLogin.ts";
 import {StyleSheet, TouchableOpacity} from "react-native";
 import {Formik, FormikHelpers} from "formik";
 import * as Yup from "yup";
