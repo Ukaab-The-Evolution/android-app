@@ -1,6 +1,6 @@
 import Config from "react-native-config";
 import {GoogleSignin} from "@react-native-google-signin/google-signin";
-import {supabase} from "../supabase.ts";
+import {ayan_supabase} from "../ayan_supabase.ts";
 import {User} from "@supabase/supabase-js";
 import * as Keychain from 'react-native-keychain';
 
@@ -176,7 +176,7 @@ class AyanAuthService implements AyanAuthInterface {
         const idToken = userInfo.data?.idToken;
         // Send token to Supabase for authentication
         if (idToken) {
-            const {data, error} = await supabase.auth.signInWithIdToken({
+            const {data, error} = await ayan_supabase.auth.signInWithIdToken({
                 provider: 'google',
                 token: idToken,
             });
