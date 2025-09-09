@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native-clipboard/clipboard": "^1.16.3",
+    "@react-native-community/blur": "^4.4.1",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-google-signin/google-signin": "^15.0.0",
     "@react-native/new-app-screen": "0.80.2",
@@ -20,11 +21,16 @@
     "@react-navigation/native-stack": "^7.3.24",
     "@react-navigation/stack": "^7.4.5",
     "@supabase/supabase-js": "^2.55.0",
+    "formik": "^2.4.6",
+    "lucide-react-native": "^0.540.0",
     "react": "19.1.0",
     "react-native": "0.80.2",
     "react-native-config": "^1.5.6",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-gesture-handler": "^2.28.0",
+    "react-native-image-picker": "^8.2.1",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-keychain": "^10.0.0",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-otp-inputs": "^7.4.0",
     "react-native-reanimated": "^4.0.2",
@@ -33,7 +39,8 @@
     "react-native-svg": "^15.12.1",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-worklets": "^0.4.1",
-    "styled-components": "^6.1.19"
+    "styled-components": "^6.1.19",
+    "yup": "^1.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

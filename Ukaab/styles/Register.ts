@@ -1,19 +1,18 @@
 import styled from "styled-components/native";
 
 
+
 export const FormDescription = styled.Text`
-    color: #5F5F5F;
+    color: #7B7F8D;
     font-size: 12px;
-    margin-bottom: 32px;
-    font-weight: 600;
-    font-family: Poppins-Medium;
+    font-family: Poppins-Regular;
 `
 
 
 export const FormTitle = styled.Text`
     font-size: 24px;
     color: #333333;
-    margin-bottom: 24px;
+    margin-bottom: 8px;
     font-family: Poppins-Bold;
 `
 
@@ -21,7 +20,7 @@ export const Row = styled.View`
     flex-direction: row;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
 `
 
 export const FormLogoContainer = styled.View`
@@ -43,6 +42,13 @@ export const FormLogoText = styled.Text`
     font-family: Radley-Regular;
 `
 
+export const LoginLink = styled.Text`
+    font-size: 12px;
+    font-family: Poppins-Medium;
+    color: #3B6255;
+    text-decoration: underline;
+`
+
 
 export const PasswordRequirementsContainer = styled.View`
     display: flex;
@@ -58,4 +64,28 @@ export const PasswordRequirementText = styled.Text`
     font-size: 10px;
     font-family: Poppins-Regular;
     line-height: 10px;
+`
+
+export const DividerContainer = styled.View`
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    margin: 16px 0;
+`
+
+
+export const Divider = styled.View`
+    height: 1px;
+    flex: 1;
+    padding: 0;
+    margin: 0;
+    border-radius: 100px;
+    background: #578C7A;
+`
+
+export const DividerText = styled.Text`
+    color: #7B7F8D;
+    font-size: 10px;
+    font-family: Poppins-Regular;
 `

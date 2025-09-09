@@ -1,39 +1,68 @@
 import {
-    FormContainer,
     FormTitle,
-    BackgroundImage,
-    ButtonGradient,
-    ButtonText,
     FormDescription,
     FormLogoContainer, FormLogoText, FormLogo,
-    LinearGradientContainer, MainContainer
 } from "../styles/OTPVerification.ts";
-import {StyleSheet, TouchableNativeFeedback} from "react-native";
+import {StyleSheet} from "react-native";
 import OtpInputs from "react-native-otp-inputs";
+import {StackScreenProps} from "@react-navigation/stack";
+import {AuthStackNavigatorParamList} from "../navigators/AuthStackNavigator.tsx";
+import * as Yup from "yup"
+import {Formik, FormikHelpers} from "formik";
+import {useContext} from "react";
+import {AyanAuthContext} from "../providers/AyanAuthProvider.tsx";
+import AuthForm from "../layout/AuthForm.tsx";
+import FormButton from "../components/FormButton.tsx";
 
-const OTPVerificationScreen = () => {
-    return <MainContainer>
+type OTPVerificationProps = StackScreenProps<AuthStackNavigatorParamList, "OTP Verification">;
 
-        <LinearGradientContainer colors={["#223931", "#406C5D", "#579983", "#C6E6DC", "#E6EDEC"]}>
-            <BackgroundImage source={require("../assets/images/TruckingMobileBackground.jpg")} />
-        </LinearGradientContainer>
-        <FormContainer style={styles["form-shadow"]}>
-            <FormLogoContainer>
-                <FormLogo source={require("../assets/icons/LogoGreen.png")}/>
-                <FormLogoText>Ukaab</FormLogoText>
-            </FormLogoContainer>
-            <FormTitle>OTP Verification</FormTitle>
-            <FormDescription>We have sent you Email please check your Mail and Complete OTP Code</FormDescription>
-            <OtpInputs inputContainerStyles={styles["otp-input-container"]} style={styles["otp-inputs-container"]}
-                       handleChange={() => null} autofillFromClipboard={true} numberOfInputs={6}
-                       inputStyles={styles["otp-input"]}/>
-            <TouchableNativeFeedback useForeground={true}>
-                <ButtonGradient style={styles["button-drop-shadow"]} colors={["#578C7A", "#223931"]}>
-                    <ButtonText>Verify</ButtonText>
-                </ButtonGradient>
-            </TouchableNativeFeedback>
-        </FormContainer>
-    </MainContainer>
+const OTPSchema = Yup.object().shape({
+    otp: Yup.string()
+        .length(6, "OTP must be 6 digits")
+        .required("OTP is required"),
+});
+
+const OTPVerificationScreen = ({route}: OTPVerificationProps) => {
+    const {email} = route.params;
+    const authProvider = useContext(AyanAuthContext)
+
+    const verifyOTP = async (values: { otp: string }, {setStatus}: FormikHelpers<{ otp: string }>) => {
+        try {
+            const data = authProvider?.verifyOtp(email, values.otp);
+            console.log(data)
+            setStatus("Successful")
+
+        } catch (error) {
+            console.error("Error", error);
+            setStatus("Failed")
+        } finally {
+            setTimeout(() => setStatus(null), 2000)
+        }
+    }
+
+    return <AuthForm>
+        <Formik validationSchema={OTPSchema} initialValues={{otp: ""}} onSubmit={verifyOTP}>
+            {({handleSubmit, setFieldValue, isSubmitting, status}) => (
+                <>
+                    <FormLogoContainer>
+                        <FormLogo source={require("../assets/icons/LogoGreen.png")}/>
+                        <FormLogoText>Ukaab</FormLogoText>
+                    </FormLogoContainer>
+                    <FormTitle>OTP Verification</FormTitle>
+                    <FormDescription>We have sent you Email please check your Mail and Complete OTP
+                        Code</FormDescription>
+                    <OtpInputs inputContainerStyles={styles["otp-input-container"]}
+                               style={styles["otp-inputs-container"]}
+                               handleChange={(code) => setFieldValue("otp", code)}
+                               autofillFromClipboard={true}
+                               numberOfInputs={6}
+                               inputStyles={styles["otp-input"]}/>
+                    <FormButton status={status} title="Submit" isSubmitting={isSubmitting}
+                                onPress={() => handleSubmit()} />
+                </>
+            )}
+        </Formik>
+    </AuthForm>
 }
 
 
@@ -60,12 +89,6 @@ const styles = StyleSheet.create({
         fontFamily: "Poppins-Regular",
         fontSize: 18,
         lineHeight: 18
-    },
-    "form-shadow": {
-        boxShadow: "0px 8px 24px #17171788"
-    },
-    "button-drop-shadow": {
-        boxShadow: "0px 6px 12px #0000003B"
     }
 })
 

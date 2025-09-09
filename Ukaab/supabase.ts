@@ -3,8 +3,8 @@ import { createClient } from '@supabase/supabase-js';
 import Config from 'react-native-config';
 
 // Environment variables with fallbacks for development
-const supabaseUrl = Config.NEXT_PUBLIC_SUPABASE_URL || 'https://aolinrjyoaxafvmedasr.supabase.co';
-const supabaseAnonKey = Config.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFvbGlucmp5b2F4YWZ2bWVkYXNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3MzQzODcsImV4cCI6MjA2OTMxMDM4N30.q4j39ENJisC7I-p-q9RelMfAbjOhh7O8kYuE-6bMJMc';
+const supabaseUrl = Config.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = Config.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 // Validate configuration
 if (!supabaseUrl || !supabaseAnonKey) {

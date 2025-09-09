@@ -60,7 +60,7 @@ Here’s a sample .env file template you can follow:
 
 env
 # Supabase credentials
-SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_URL=https://your-project.ayan_supabase.co
 SUPABASE_ANON_KEY=your-anon-key
 
 # Railway API endpoint (if using Railway backend)
@@ -71,8 +71,8 @@ APP_ENV=development
 
 
 🚨 Make sure you never commit .env to the repository. It's ignored in .gitignore.
-import { createClient } from '@supabase/supabase-js';
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+import { createClient } from '@ayan_supabase/ayan_supabase-js';
+const ayan_supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 Paste it in the .env under RAILWAY_API_URL
 
 Use this base URL to connect to backend endpoints from your frontend code.
