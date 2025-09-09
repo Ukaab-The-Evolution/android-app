@@ -15,13 +15,13 @@ import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 
 const ChooseRole = () => {
     const navigation = useNavigation<NativeStackNavigationProp<AuthStackNavigatorParamList>>();
-    const [role, setRole] = useState<string | null>(null)
+    const [role, setRole] = useState<null | "Shipper" | "Driver" | "Company">(null)
     const [error, setError] = useState<string | null>(null)
     const [showDropdown, setShowDropdown] = useState(false)
     const toggleDropdown = () => {
         setShowDropdown(!showDropdown)
     }
-    const selectRole = (value: string) => {
+    const selectRole = (value: "Shipper" | "Driver" | "Company") => {
         setRole(value)
         setShowDropdown(false)
     }

@@ -65,7 +65,7 @@ const AuthStackNavigator = () => {
     }, []);
     return (
         <NavigationContainer ref={navigationRef} linking={linking}>
-            <Navigator.Navigator initialRouteName={"Get Started"} screenOptions={{headerShown: false}}>
+            <Navigator.Navigator initialRouteName={authProvider?.authenticated ? "Main App" : "Get Started"} screenOptions={{headerShown: false}}>
                 <Navigator.Screen name="OTP Verification" component={OTPVerification}/>
                 <Navigator.Screen name="Forgot Password" component={ForgotPassword}/>
                 <Navigator.Screen name="Main App" component={BottomTabNavigator}/>
