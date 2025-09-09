@@ -3,9 +3,9 @@ import Config from 'react-native-config';
 
 
 
-const supabaseUrl = Config.SUPABASE_URL!;
-const supabaseAnonKey = Config.SUPABASE_ANON_KEY!;
-export const ayan_supabase = createClient(supabaseUrl, supabaseAnonKey, {
+const ayanSupabaseUrl = Config.SUPABASE_URL!;
+const ayanSupabaseAnonKey = Config.SUPABASE_ANON_KEY!;
+export const ayan_supabase = createClient(ayanSupabaseUrl, ayanSupabaseAnonKey, {
     auth: {
         autoRefreshToken: true,
         persistSession: true,
