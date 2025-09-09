@@ -61,7 +61,7 @@ const AyanLogin = ({route}: LoginProps) => {
             </FormLogoContainer>
 
             <Row>
-                <FormTitle>AyanLogin</FormTitle>
+                <FormTitle>Login</FormTitle>
             </Row>
 
             <Row style={styles["description-container"]}>
@@ -86,7 +86,7 @@ const AyanLogin = ({route}: LoginProps) => {
                                        error={errors.password && touched.password ? errors.password : null}/>
 
                         <FormButton onPress={() => handleSubmit()} isSubmitting={isSubmitting}
-                                    status={status} title="AyanLogin"/>
+                                    status={status} title="Login"/>
 
                         <Row style={[styles["justify-between"], styles["mt-20"]]}>
                             <Row style={styles["gap-10"]}>
