@@ -36,7 +36,6 @@ export type AuthStackNavigatorParamList = {
     "LoadRequestsPage"?: never;
 };
 
-
 const Navigator = createNativeStackNavigator<AuthStackNavigatorParamList>();
 
 export const navigationRef = createNavigationContainerRef<AuthStackNavigatorParamList>();

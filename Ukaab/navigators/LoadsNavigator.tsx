@@ -1,30 +1,19 @@
-import React, { useState } from "react";
-import {
-    View,
-    Pressable,
-    StyleSheet,
-} from "react-native";
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoadRequestsPage from "../screens/LoadRequestsPage";
 import AcceptedLoadsPage from "../screens/AcceptedLoadsPage";
+import DetailedView from "../screens/DetailedView";
+
+const Navigator = createNativeStackNavigator();
 
 const LoadsNavigator = () => {
-    const [activeTab, setActiveTab] = useState<'requests' | 'accepted'>('requests');
-
     return (
-        <View style={styles.container}>
-            {activeTab === 'requests' ? (
-                <LoadRequestsPage onSwitchToAccepted={() => setActiveTab('accepted')} />
-            ) : (
-                <AcceptedLoadsPage onSwitchToRequests={() => setActiveTab('requests')} />
-            )}
-        </View>
+        <Navigator.Navigator screenOptions={{ headerShown: false }}>
+            <Navigator.Screen name="LoadRequests" component={LoadRequestsPage} />
+            <Navigator.Screen name="AcceptedLoads" component={AcceptedLoadsPage} />
+            <Navigator.Screen name="DetailedView" component={DetailedView} />
+        </Navigator.Navigator>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-});
 
 export default LoadsNavigator;

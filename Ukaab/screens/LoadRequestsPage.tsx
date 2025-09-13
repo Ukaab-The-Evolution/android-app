@@ -7,6 +7,7 @@ import {
     StyleSheet,
     StatusBar,
     SafeAreaView,
+    TouchableNativeFeedback,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -70,24 +71,20 @@ const LoadRequestsPage = ({ onSwitchToAccepted }: LoadRequestsPageProps) => {
     ];
 
     const handleAcceptLoad = (loadId: string) => {
-        // Switch to accepted loads tab instead of navigating
-        if (onSwitchToAccepted) {
-            onSwitchToAccepted();
-        }
+        // Switch to accepted loads tab
+        navigation.navigate('AcceptedLoads');
     };
 
     const handleRejectLoad = (loadId: string) => {
-        // Handle load rejection
-        console.log('Rejected load:', loadId);
+        // Navigate to DetailedView for reject action
+        navigation.navigate('DetailedView');
     };
 
     const navigateToAcceptedLoads = () => {
-        if (onSwitchToAccepted) {
-            onSwitchToAccepted();
-        }
+        navigation.navigate('AcceptedLoads');
     };
 
-    // Load Requests icon component (your provided SVG)
+    // Load Requests icon component
     const LoadRequestsIcon = ({ color }: { color: string }) => (
         <View style={{ width: 18, height: 18 }}>
             <Svg width="18" height="18" viewBox="0 0 18 18" fill="none">

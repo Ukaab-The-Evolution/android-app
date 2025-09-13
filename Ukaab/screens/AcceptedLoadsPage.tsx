@@ -56,9 +56,7 @@ const AcceptedLoadsPage = ({ onSwitchToRequests }: AcceptedLoadsPageProps) => {
 
 
     const navigateToLoadRequests = () => {
-        if (onSwitchToRequests) {
-            onSwitchToRequests();
-        }
+        navigation.navigate('LoadRequests');
     };
 
     // Load Requests icon component
