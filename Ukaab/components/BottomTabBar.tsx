@@ -11,7 +11,7 @@ import {BottomTabNavigationEventMap} from "@react-navigation/bottom-tabs";
 import {ImageSourcePropType, TouchableWithoutFeedback} from "react-native";
 import Animated from 'react-native-reanimated';
 import {useTheme} from "styled-components";
-import {Path} from "react-native-svg";
+import Svg, {Path} from "react-native-svg";
 
 
 interface BottomTabBarProps {
@@ -27,7 +27,7 @@ type IconProps = {
 
 const icons: Record<string, IconProps> = {
     "Home": {"source": require("../assets/icons/Home.png"), "width": 28, "height": 28},
-    "OrderPage": {"source": require( "../assets/icons/Booking.png"), "width": 32, "height": 32},
+    "Loads": {"source": require( "../assets/icons/Booking.png"), "width": 32, "height": 32},
     "Trucks": {"source": require("../assets/icons/CargoTruck.png"), "width": 32, "height": 32},
     "Drivers": {"source": require("../assets/icons/TruckDriver.png"), "width": 32, "height": 32},
     "About": {"source": require("../assets/icons/UserCircle.png"), "width": 26, "height": 26},
@@ -72,4 +72,3 @@ const BottomTabBar = ({navigation, state}: BottomTabBarProps) => {
 
 
 export default BottomTabBar
-

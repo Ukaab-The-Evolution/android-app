@@ -14,7 +14,13 @@ import {Linking} from "react-native";
 import GetStarted from "../screens/GetStarted.tsx";
 import RoleSelection from "../screens/RoleSelection.tsx";
 import Login from "../screens/Login.tsx";
+import LoadRequestsPage from "../screens/LoadRequestsPage.tsx";
 
+
+// TEMPORARY: Set to true to skip login and go directly to main app
+const SKIP_LOGIN_FOR_DEV = true;
+
+// Add to the AuthStackNavigatorParamList type
 export type AuthStackNavigatorParamList = {
     "OTP Verification": { email: string };
     "Register": { role: "Driver" | "Shipper" | "Company" };
@@ -27,6 +33,7 @@ export type AuthStackNavigatorParamList = {
     "Get Started"?: never;
     "Role Selection"?: never;
     "Login"?: never;
+    "LoadRequestsPage"?: never;
 };
 
 const Navigator = createNativeStackNavigator<AuthStackNavigatorParamList>();
@@ -69,9 +76,13 @@ const AuthStackNavigator = () => {
 
         return () => sub.remove();
     }, []);
+
+    // Determine initial route based on development flag
+    const initialRoute = SKIP_LOGIN_FOR_DEV ? "Main App" : "Ayan Get Started";
+
     return (
         <NavigationContainer ref={navigationRef} linking={linking}>
-            <Navigator.Navigator initialRouteName={"Ayan Get Started"} screenOptions={{headerShown: false}}>
+            <Navigator.Navigator initialRouteName={initialRoute} screenOptions={{headerShown: false}}>
                 <Navigator.Screen name="OTP Verification" component={OTPVerification}/>
                 <Navigator.Screen name="Forgot Password" component={ForgotPassword}/>
                 <Navigator.Screen name="Main App" component={BottomTabNavigator}/>
@@ -83,6 +94,7 @@ const AuthStackNavigator = () => {
                 <Navigator.Screen name="Get Started" component={GetStarted}/>
                 <Navigator.Screen name="Role Selection" component={RoleSelection}/>
                 <Navigator.Screen name="Login" component={Login}/>
+                <Navigator.Screen name="LoadRequestsPage" component={LoadRequestsPage}/>
             </Navigator.Navigator>
         </NavigationContainer>
     )
