@@ -4,6 +4,7 @@ import BottomTabBar from "../components/BottomTabBar.tsx";
 import Home from "../screens/Home.tsx";
 import OrderPage from "../screens/OrderPage.tsx";
 import About from "../screens/About.tsx";
+import LoadsNavigator from "./LoadsNavigator.tsx";
 import {BottomTabBarProps, BottomTabNavigationOptions, createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import {
     Container as AppBarContainer,
@@ -21,6 +22,7 @@ export type BottomTabNavigatorParamList = {
     "Trucks": never
     "Drivers"?: never
     "About"?: never
+    "Loads"?: never
 };
 
 const Navigator = createBottomTabNavigator<BottomTabNavigatorParamList>();
@@ -50,6 +52,7 @@ export const BottomTabNavigator = () => {
                 <Navigator.Screen name="Trucks" component={TrucksStackNavigator}/>
                 <Navigator.Screen name="Drivers" component={DriversStackNavigator}/>
                 <Navigator.Screen name="About" component={About}/>
+                <Navigator.Screen name="Loads" component={LoadsNavigator}/>
             </Navigator.Navigator>
         </CompanyProvider>
     );

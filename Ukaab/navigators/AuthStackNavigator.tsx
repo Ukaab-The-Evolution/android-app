@@ -13,7 +13,9 @@ import {Linking} from "react-native";
 import GetStarted from "../screens/GetStarted.tsx";
 import RoleSelection from "../screens/RoleSelection.tsx";
 import Login from "../screens/Login.tsx";
+import LoadRequestsPage from "../screens/LoadRequestsPage.tsx";
 import {useEffect} from "react";
+
 
 export type AuthStackNavigatorParamList = {
     "OTP Verification": { email: string };
@@ -27,6 +29,7 @@ export type AuthStackNavigatorParamList = {
     "Get Started"?: never;
     "Role Selection"?: never;
     "Login"?: never;
+    "LoadRequestsPage"?: never;
 };
 
 const Navigator = createNativeStackNavigator<AuthStackNavigatorParamList>();
@@ -66,8 +69,11 @@ const AuthStackNavigator = () => {
 
         const sub = Linking.addEventListener("url", ({url}) => handleUniversalLink(url));
         Linking.getInitialURL().then((url) => url && handleUniversalLink(url));
+
         return () => sub.remove();
     }, []);
+
+    // Determine initial route based on development flag
 
     useEffect(() => {
         if (authProvider?.authenticated) navigationRef.navigate("Main App")
@@ -87,6 +93,7 @@ const AuthStackNavigator = () => {
                 <Navigator.Screen name="Get Started" component={GetStarted}/>
                 <Navigator.Screen name="Role Selection" component={RoleSelection}/>
                 <Navigator.Screen name="Login" component={Login}/>
+                <Navigator.Screen name="LoadRequestsPage" component={LoadRequestsPage}/>
             </Navigator.Navigator>
         </NavigationContainer>
     )
