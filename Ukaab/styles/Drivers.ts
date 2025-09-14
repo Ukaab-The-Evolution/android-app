@@ -31,22 +31,25 @@ export const ButtonText = styled.Text`
 
 export const DriverContainer = styled.View`
     display: flex;
-    background: #FFFFFF;
     padding: 8px;
     height: fit-content;
     border-radius: 10px;
+    align-items: center;
+    justify-content: center;
     flex: 1;
 `
 
 export const DriverPhotoImage = styled.Image`
-    height: 140px;
-    background: #578C7A;
-    width: 100%;
+    width: 100px;
+    height: 100px;
+    aspect-ratio: 1;
+    margin-bottom: 10px;
+    border: 1px solid black;
+    border-radius: 100px;
 `
 
 export const DriverPhotoPlaceholder = styled.View`
     height: 140px;
-    background: #578C7A;
     width: 100%;
 `
 
@@ -55,6 +58,7 @@ export const DriverName = styled.Text`
     color: #3B6255;
     width: 100%;
     font-family: Poppins-Bold;
+    text-align: center;
 `
 
 export const DriverID = styled.Text`
@@ -62,4 +66,5 @@ export const DriverID = styled.Text`
     color: #5F5F5F;
     width: 100%;
     font-family: Poppins-Medium;
+    text-align: center;
 `

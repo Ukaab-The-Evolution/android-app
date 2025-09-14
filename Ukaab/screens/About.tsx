@@ -1,10 +1,6 @@
 import * as React from "react";
 import {
     ScrollView,
-    Image,
-    View,
-    Text,
-    TextInput,
     Platform,
     KeyboardAvoidingView, TouchableNativeFeedback,
 } from "react-native";
@@ -14,12 +10,25 @@ import {
     EditIcon,
     EditProfilePhotoButton, Label,
     ProfilePhotoContainer,
-    ProfilePhotoPlaceholder, ColumnContainer, SubTitle, TextField, TextFieldContainer, SocialIcon, ProfilePhotoImage
+    ColumnContainer, SubTitle, TextField, TextFieldContainer, SocialIcon, ProfilePhotoImage
 } from "../styles/About.ts";
-import {useTheme} from "styled-components";
+import {useCompany} from "../providers/CompanyProvider.tsx";
+import {useAyanAuth} from "../providers/AyanAuthProvider.tsx";
+import {useEffect, useState} from "react";
 
 const About = () => {
-    const theme = useTheme();
+    const companyProvider = useCompany()
+    const authProvider = useAyanAuth()
+    const [details, setDetails] = useState<any | null>(null)
+
+    useEffect(() => {
+        if(authProvider?.token){
+            companyProvider?.fetchDetails(authProvider.token).then((data) => {
+                setDetails(data)
+            })
+            console.log("Details", details)
+        }
+    }, [authProvider?.token, companyProvider, details])
     return (
         <SafeAreaView>
             <KeyboardAvoidingView

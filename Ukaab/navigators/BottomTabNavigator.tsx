@@ -13,8 +13,17 @@ import {
 import DriversStackNavigator from "./DriversStackNavigator.tsx";
 import TrucksStackNavigator from "./TrucksStackNavigator.tsx";
 import {TouchableNativeFeedback} from "react-native";
+import CompanyProvider from "../providers/CompanyProvider.tsx";
 
-const Navigator = createBottomTabNavigator();
+export type BottomTabNavigatorParamList = {
+    "Home"?: never
+    "OrderPage"?: never
+    "Trucks": never
+    "Drivers"?: never
+    "About"?: never
+};
+
+const Navigator = createBottomTabNavigator<BottomTabNavigatorParamList>();
 
 export const BottomTabNavigator = () => {
     const tabBar = (props: BottomTabBarProps) => <BottomTabBar {...props}/>
@@ -34,12 +43,14 @@ export const BottomTabNavigator = () => {
     }
 
     return(
-        <Navigator.Navigator tabBar={tabBar} screenOptions={screenOptions}>
-            <Navigator.Screen name="Home" component={Home}/>
-            <Navigator.Screen name="OrderPage" component={OrderPage}/>
-            <Navigator.Screen name="Trucks" component={TrucksStackNavigator}/>
-            <Navigator.Screen name="Drivers" component={DriversStackNavigator}/>
-            <Navigator.Screen name="About" component={About}/>
-        </Navigator.Navigator>
+        <CompanyProvider>
+            <Navigator.Navigator tabBar={tabBar} screenOptions={screenOptions}>
+                <Navigator.Screen name="Home" component={Home}/>
+                <Navigator.Screen name="OrderPage" component={OrderPage}/>
+                <Navigator.Screen name="Trucks" component={TrucksStackNavigator}/>
+                <Navigator.Screen name="Drivers" component={DriversStackNavigator}/>
+                <Navigator.Screen name="About" component={About}/>
+            </Navigator.Navigator>
+        </CompanyProvider>
     );
 };

@@ -8,12 +8,12 @@ import Register from "../screens/Register.tsx";
 import AyanGetStarted from "../screens/AyanGetStarted.tsx";
 import ChooseRole from "../screens/ChooseRole.tsx";
 import AyanLogin from "../screens/AyanLogin.tsx";
-import {useContext, useEffect} from "react";
-import {AyanAuthContext} from "../providers/AyanAuthProvider.tsx";
+import {useAyanAuth} from "../providers/AyanAuthProvider.tsx";
 import {Linking} from "react-native";
 import GetStarted from "../screens/GetStarted.tsx";
 import RoleSelection from "../screens/RoleSelection.tsx";
 import Login from "../screens/Login.tsx";
+import {useEffect} from "react";
 
 export type AuthStackNavigatorParamList = {
     "OTP Verification": { email: string };
@@ -35,7 +35,7 @@ export const navigationRef = createNavigationContainerRef<AuthStackNavigatorPara
 
 
 const AuthStackNavigator = () => {
-    const authProvider = useContext(AyanAuthContext)
+    const authProvider = useAyanAuth()
 
     const linking: LinkingOptions<ReactNavigation.RootParamList> = {
         prefixes: ["https://web-app-4n1r.onrender.com"],
@@ -66,12 +66,16 @@ const AuthStackNavigator = () => {
 
         const sub = Linking.addEventListener("url", ({url}) => handleUniversalLink(url));
         Linking.getInitialURL().then((url) => url && handleUniversalLink(url));
-
         return () => sub.remove();
     }, []);
+
+    useEffect(() => {
+        if (authProvider?.authenticated) navigationRef.navigate("Main App")
+    }, [authProvider?.authenticated])
+
     return (
         <NavigationContainer ref={navigationRef} linking={linking}>
-            <Navigator.Navigator initialRouteName={"Ayan Get Started"} screenOptions={{headerShown: false}}>
+            <Navigator.Navigator initialRouteName="Ayan Get Started" screenOptions={{headerShown: false}}>
                 <Navigator.Screen name="OTP Verification" component={OTPVerification}/>
                 <Navigator.Screen name="Forgot Password" component={ForgotPassword}/>
                 <Navigator.Screen name="Main App" component={BottomTabNavigator}/>

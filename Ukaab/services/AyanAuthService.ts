@@ -3,6 +3,7 @@ import {GoogleSignin} from "@react-native-google-signin/google-signin";
 import {supabase} from "../supabase.ts";
 import {User} from "@supabase/supabase-js";
 import * as Keychain from 'react-native-keychain';
+import Geolocation from '@react-native-community/geolocation';
 
 export interface AyanAuthInterface {
     register: (form: UserRegister, userType: "Driver" | "Company" | "Shipper") => Promise<any>;
@@ -10,8 +11,7 @@ export interface AyanAuthInterface {
     continueWithGoogle: (values: { name: string }) => Promise<User | undefined>;
     verifyOtp: (email: string, otp: string) => Promise<any>;
     forgotPassword: (email: string) => Promise<any>;
-    token: () => Promise<string | null>;
-    authenticated: Promise<boolean>;
+    getToken: () => Promise<string | null>;
     resetPassword: (token: string, form: PasswordUpdate) => Promise<any>;
 }
 export interface UserRegister {
@@ -34,16 +34,14 @@ export interface PasswordUpdate {
 
 class AyanAuthService implements AyanAuthInterface {
 
-    token = async () => {
+    getToken = async () => {
         try {
             const data = await Keychain.getGenericPassword()
-            if(data){
-                return data.password
-            }
-            return null
+            if (!data) return null
+            return data.password
         }
-        catch(err){
-            return null
+        catch (error) {
+            return null;
         }
     }
 
@@ -65,11 +63,6 @@ class AyanAuthService implements AyanAuthInterface {
         return data
     }
 
-    get authenticated(){
-        return this.token().then((value) => {
-            return !!value;
-        });
-    }
 
     forgotPassword = async (email: string): Promise<any> => {
         const headers = {
@@ -139,8 +132,12 @@ class AyanAuthService implements AyanAuthInterface {
         if (!otp.ok) {
             throw otp;
         }
+        let accessDenied = false;
+        Geolocation.requestAuthorization(undefined, () => {
+            accessDenied = true;
+        })
 
-        return await response.json()
+        return {"access_denied": accessDenied, "data": await response.json()};
     }
 
     login = async (form: UserLogin) => {
@@ -158,7 +155,12 @@ class AyanAuthService implements AyanAuthInterface {
         }
         const data = await response.json()
         await Keychain.setGenericPassword("access_token", data.token)
-        return data
+        let accessDenied = false;
+        Geolocation.requestAuthorization(undefined, () => {
+            accessDenied = true;
+        })
+
+        return {"access_denied": accessDenied, "data": data};
     }
 
     continueWithGoogle = async (values: { name: string }) => {
