@@ -39,7 +39,7 @@ type DriversProps = StackScreenProps<DriversStackNavigatorParamList, "Drivers">;
 const Drivers = ({navigation}: DriversProps) => {
     return (
         <Container>
-            <TouchableNativeFeedback  useForeground={true}>
+            <TouchableNativeFeedback onPress={() => navigation.navigate("Driver Documents")}  useForeground={true}>
                 <ButtonGradient style={styles["button-drop-shadow"]} colors={["#578C7A", "#223931"]}>
                     <ButtonText>Add a Driver</ButtonText>
                 </ButtonGradient>
