@@ -1,12 +1,9 @@
 import * as React from "react";
 import {
     ScrollView,
-    Image,
-    View,
-    Text,
-    TextInput,
     Platform,
     KeyboardAvoidingView, TouchableNativeFeedback,
+    StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -14,12 +11,30 @@ import {
     EditIcon,
     EditProfilePhotoButton, Label,
     ProfilePhotoContainer,
-    ProfilePhotoPlaceholder, ColumnContainer, SubTitle, TextField, TextFieldContainer, SocialIcon, ProfilePhotoImage
+    ColumnContainer, SubTitle, TextField, TextFieldContainer, SocialIcon, ProfilePhotoImage
 } from "../styles/About.ts";
-import {useTheme} from "styled-components";
+import {useCompany} from "../providers/CompanyProvider.tsx";
+import {useAyanAuth} from "../providers/AyanAuthProvider.tsx";
+import {useEffect, useState} from "react";
+import PrimaryButton from "../components/PrimaryButton.tsx";
+import {StackScreenProps} from "@react-navigation/stack";
+import {AboutStackNavigatorParamList} from "../navigators/AboutStackNavigator.tsx";
 
-const About = () => {
-    const theme = useTheme();
+type AboutProps = StackScreenProps<AboutStackNavigatorParamList, "Details">
+
+const About = ({navigation}: AboutProps) => {
+    const companyProvider = useCompany()
+    const authProvider = useAyanAuth()
+    const [details, setDetails] = useState<any | null>(null)
+
+    useEffect(() => {
+        if(authProvider?.token){
+            companyProvider?.fetchDetails(authProvider.token).then((data) => {
+                setDetails(data)
+            })
+            console.log("Details", details)
+        }
+    }, [authProvider?.token, companyProvider, details])
     return (
         <SafeAreaView>
             <KeyboardAvoidingView
@@ -66,21 +81,32 @@ const About = () => {
                         <SubTitle>Socials</SubTitle>
                         <TextFieldContainer style={{flexDirection: "row",alignItems: "center", width: "auto"}}>
                             <SocialIcon source={require('../assets/icons/Instagram.png')} />
-                            <TextField style={{flex: 1}} placeholderTextColor="#3B6255" placeholder="alpha.com" />
+                            <TextField style={styles["flex-1"]} placeholderTextColor="#3B6255" placeholder="alpha.com" />
                         </TextFieldContainer>
                         <TextFieldContainer style={{flexDirection: "row",alignItems: "center", width: "auto"}}>
                             <SocialIcon source={require('../assets/icons/FaceBook.png')} />
-                            <TextField style={{flex: 1}} placeholderTextColor="#3B6255" placeholder="alpha.com" />
+                            <TextField style={styles["flex-1"]} placeholderTextColor="#3B6255" placeholder="alpha.com" />
                         </TextFieldContainer>
                         <TextFieldContainer style={{flexDirection: "row",alignItems: "center", width: "auto"}}>
                             <SocialIcon source={require('../assets/icons/X.png')} />
-                            <TextField style={{flex: 1}} placeholderTextColor="#3B6255" placeholder="alpha.com" />
+                            <TextField style={styles["flex-1"]} placeholderTextColor="#3B6255" placeholder="alpha.com" />
                         </TextFieldContainer>
+
+                        <PrimaryButton style={styles["w-full"]} onPress={() => navigation.navigate("Upload CNIC")} title="Upload CNIC"/>
                     </Container>
                 </ScrollView>
             </KeyboardAvoidingView>
         </SafeAreaView>
     );
 };
+
+const styles = StyleSheet.create({
+    "flex-1": {
+        flex: 1,
+    },
+    "w-full": {
+        width: "100%",
+    }
+})
 
 export default About;

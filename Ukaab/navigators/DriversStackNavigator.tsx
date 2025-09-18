@@ -5,7 +5,14 @@ import Drivers from "../screens/Drivers.tsx";
 import DriverRegistration from "../screens/DriverRegistration.tsx";
 import DriverDocuments from "../screens/DriverDocuments.tsx";
 
-const Navigator = createNativeStackNavigator()
+export type DriversStackNavigatorParamList = {
+    "Drivers"?: never
+    "Driver Registration"?: never
+    "Driver Documents"?: never
+};
+
+
+const Navigator = createNativeStackNavigator<DriversStackNavigatorParamList>()
 
 
 const DriversStackNavigator = () => {

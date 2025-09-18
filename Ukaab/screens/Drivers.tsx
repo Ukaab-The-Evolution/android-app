@@ -5,9 +5,10 @@ import {
     Container,
     ButtonText,
     DriverContainer,
-    DriverPhotoPlaceholder, DriverName, DriverID
+    DriverPhotoPlaceholder, DriverName, DriverID, DriverPhotoImage
 } from "../styles/Drivers.ts";
-import {useNavigation} from "@react-navigation/native";
+import {StackScreenProps} from "@react-navigation/stack";
+import {DriversStackNavigatorParamList} from "../navigators/DriversStackNavigator.tsx";
 
 const driverNames = [
     "John Doe",
@@ -32,13 +33,15 @@ const data = Array.from({ length: 15 }, (_, i) => ({
     driver: driverNames[i] // assign driver name from the array
 }));
 
-const Drivers = () => {
-    const navigation = useNavigation();
+type DriversProps = StackScreenProps<DriversStackNavigatorParamList, "Drivers">;
+
+
+const Drivers = ({navigation}: DriversProps) => {
     return (
         <Container>
-            <TouchableNativeFeedback onPress={() => navigation.navigate("Driver Registration")} useForeground={true}>
+            <TouchableNativeFeedback onPress={() => navigation.navigate("Driver Documents")}  useForeground={true}>
                 <ButtonGradient style={styles["button-drop-shadow"]} colors={["#578C7A", "#223931"]}>
-                    <ButtonText>Add to Fleet</ButtonText>
+                    <ButtonText>Add a Driver</ButtonText>
                 </ButtonGradient>
             </TouchableNativeFeedback>
             <FlatList
@@ -51,7 +54,7 @@ const Drivers = () => {
                 renderItem={
                 ({ item }) => (
                     <DriverContainer>
-                        <DriverPhotoPlaceholder/>
+                        <DriverPhotoImage source={require("../assets/avatars/Avatar-1.png")}/>
                         <DriverName>{item.driver}</DriverName>
                         <DriverID>ID: {item.id}</DriverID>
                     </DriverContainer>

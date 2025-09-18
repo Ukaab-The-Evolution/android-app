@@ -15,16 +15,7 @@ import {
 import DoubleChevronRightIcon from "../icons/DoubleChevronRightIcon.tsx";
 import * as Yup from "yup";
 import {Formik} from "formik";
-
-type Driver = {
-    name: string;
-    fatherName: string;
-    cnic: string;
-    dateOfBirth: string;
-    address: string;
-    contact: string;
-    alternateContact: string;
-}
+import {DriverRegister} from "@services/CompanyService.ts";
 
 const DriverSchema = Yup.object({
     name: Yup.string()
@@ -66,17 +57,17 @@ const DriverSchema = Yup.object({
 
 const DriverRegistration = () => {
     const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
-    const initialValues: Driver = {
+    const initialValues: DriverRegister = {
         name: "",
         fatherName: "",
-        dateOfBirth: "",
+        dateOfBirth: new Date(Date.now()),
         address: "",
-        alternateContact: "",
-        contact: "",
-        cnic: ""
+        alternateContactNumber: "",
+        contactNumber: "",
+        cnicNumber: ""
     }
 
-    const onSubmit = (values: Driver) => {
+    const onSubmit = (values: DriverRegister) => {
 
     }
 

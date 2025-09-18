@@ -72,7 +72,7 @@ const LoadRequestsPage = ({ onSwitchToAccepted }: LoadRequestsPageProps) => {
 
     const handleAcceptLoad = (loadId: string) => {
         // Switch to accepted loads tab
-        navigation.navigate('AcceptedLoads');
+        navigation.navigate('DetailedView');
     };
 
     const handleRejectLoad = (loadId: string) => {

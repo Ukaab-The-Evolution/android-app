@@ -8,19 +8,15 @@ import Register from "../screens/Register.tsx";
 import AyanGetStarted from "../screens/AyanGetStarted.tsx";
 import ChooseRole from "../screens/ChooseRole.tsx";
 import AyanLogin from "../screens/AyanLogin.tsx";
-import {useContext, useEffect} from "react";
-import {AyanAuthContext} from "../providers/AyanAuthProvider.tsx";
+import {useAyanAuth} from "../providers/AyanAuthProvider.tsx";
 import {Linking} from "react-native";
 import GetStarted from "../screens/GetStarted.tsx";
 import RoleSelection from "../screens/RoleSelection.tsx";
 import Login from "../screens/Login.tsx";
 import LoadRequestsPage from "../screens/LoadRequestsPage.tsx";
+import {useEffect} from "react";
 
 
-// TEMPORARY: Set to true to skip login and go directly to main app
-const SKIP_LOGIN_FOR_DEV = true;
-
-// Add to the AuthStackNavigatorParamList type
 export type AuthStackNavigatorParamList = {
     "OTP Verification": { email: string };
     "Register": { role: "Driver" | "Shipper" | "Company" };
@@ -42,7 +38,7 @@ export const navigationRef = createNavigationContainerRef<AuthStackNavigatorPara
 
 
 const AuthStackNavigator = () => {
-    const authProvider = useContext(AyanAuthContext)
+    const authProvider = useAyanAuth()
 
     const linking: LinkingOptions<ReactNavigation.RootParamList> = {
         prefixes: ["https://web-app-4n1r.onrender.com"],
@@ -78,11 +74,14 @@ const AuthStackNavigator = () => {
     }, []);
 
     // Determine initial route based on development flag
-    const initialRoute = SKIP_LOGIN_FOR_DEV ? "Main App" : "Ayan Get Started";
+
+    useEffect(() => {
+        if (authProvider?.authenticated) navigationRef.navigate("Main App")
+    }, [authProvider?.authenticated])
 
     return (
         <NavigationContainer ref={navigationRef} linking={linking}>
-            <Navigator.Navigator initialRouteName={initialRoute} screenOptions={{headerShown: false}}>
+            <Navigator.Navigator initialRouteName="Ayan Get Started" screenOptions={{headerShown: false}}>
                 <Navigator.Screen name="OTP Verification" component={OTPVerification}/>
                 <Navigator.Screen name="Forgot Password" component={ForgotPassword}/>
                 <Navigator.Screen name="Main App" component={BottomTabNavigator}/>
