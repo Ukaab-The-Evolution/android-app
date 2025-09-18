@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {
     View,
     Text,
@@ -10,19 +10,17 @@ import {Theme} from "../Theme";
 import MapView, {Marker} from "react-native-maps";
 import {StackScreenProps} from "@react-navigation/stack";
 import {LoadsNavigatorParamsList} from "../navigators/LoadsNavigator.tsx";
+import {useAyanAuth} from "../providers/AyanAuthProvider.tsx";
 
-type DetailedViewProps = StackScreenProps<LoadsNavigatorParamsList,  "DetailedView">
+type DetailedViewProps = StackScreenProps<LoadsNavigatorParamsList, "DetailedView">
 
 const DetailedView: React.FC<DetailedViewProps> = ({navigation}) => {
+    const authProvider = useAyanAuth()
     const handleAccept = () => {
 
         console.log("Load accepted");
     };
 
-    const handleReject = () => {
-
-        console.log("Load rejected");
-    };
 
     return (
         <View style={styles.container}>
@@ -38,15 +36,15 @@ const DetailedView: React.FC<DetailedViewProps> = ({navigation}) => {
                     }}
                     customMapStyle={mapStyle}>
                     <Marker draggable
-                        coordinate={{
-                            latitude: 37.78825,
-                            longitude: -122.4324,
-                        }}
-                        onDragEnd={
-                            (e) => alert(JSON.stringify(e.nativeEvent.coordinate))
-                        }
-                        title={'Test Marker'}
-                        description={'This is a description of the marker'}
+                            coordinate={{
+                                latitude: 37.78825,
+                                longitude: -122.4324,
+                            }}
+                            onDragEnd={
+                                (e) => alert(JSON.stringify(e.nativeEvent.coordinate))
+                            }
+                            title={'Test Marker'}
+                            description={'This is a description of the marker'}
                     />
                 </MapView>
                 <View style={styles.loadCard}>
@@ -57,10 +55,10 @@ const DetailedView: React.FC<DetailedViewProps> = ({navigation}) => {
                         {/* Route and Rate on same line */}
                         <View style={styles.routeRateContainer}>
                             <Text style={styles.routeText}>Lahore → Karachi</Text>
-                            <View style={styles.rateContainer}>
-                                <Text style={styles.rateLabel}>Rate: </Text>
-                                <Text style={styles.rateAmount}>$2,450</Text>
-                            </View>
+                            {/*<View style={styles.rateContainer}>*/}
+                            {/*    <Text style={styles.rateLabel}>Rate: </Text>*/}
+                            {/*    <Text style={styles.rateAmount}>$2,450</Text>*/}
+                            {/*</View>*/}
                         </View>
 
                         <Text style={styles.weightText}>Weight: 15,000 lbs</Text>
@@ -69,16 +67,18 @@ const DetailedView: React.FC<DetailedViewProps> = ({navigation}) => {
 
                     {/* Action Buttons */}
                     <View style={styles.buttonsContainer}>
-                        <TouchableOpacity style={styles.acceptButton} onPress={handleAccept}>
-                            <LinearGradient
-                                colors={[Theme.palette.primary, Theme.palette.secondary]}
-                                style={styles.buttonGradient}
-                                start={{x: 0, y: 0}}
-                                end={{x: 1, y: 1}}
-                            >
-                                <Text style={styles.buttonText}>Accept</Text>
-                            </LinearGradient>
-                        </TouchableOpacity>
+                        {(authProvider?.user?.userType === "driver" && authProvider.user.ownsCompany) ||
+                            authProvider?.user?.userType === "trucking_company" &&
+                            <TouchableOpacity style={styles.acceptButton} onPress={handleAccept}>
+                                <LinearGradient
+                                    colors={[Theme.palette.primary, Theme.palette.secondary]}
+                                    style={styles.buttonGradient}
+                                    start={{x: 0, y: 0}}
+                                    end={{x: 1, y: 1}}
+                                >
+                                    <Text style={styles.buttonText}>Accept</Text>
+                                </LinearGradient>
+                            </TouchableOpacity>}
 
                         <TouchableOpacity style={styles.acceptButton}
                                           onPress={() => navigation.navigate("Upload PickUp Proof")}>
@@ -103,17 +103,18 @@ const DetailedView: React.FC<DetailedViewProps> = ({navigation}) => {
                                 <Text style={styles.buttonText}>Upload Completion Proof</Text>
                             </LinearGradient>
                         </TouchableOpacity>
-
-                        <TouchableOpacity style={styles.rejectButton} onPress={handleReject}>
-                            <LinearGradient
-                                colors={["#760000", "#D64343"]}
-                                style={styles.buttonGradient}
-                                start={{x: 0, y: 0}}
-                                end={{x: 1, y: 1}}
-                            >
-                                <Text style={styles.buttonText}>Reject</Text>
-                            </LinearGradient>
-                        </TouchableOpacity>
+                        {(authProvider?.user?.userType === "driver" && authProvider.user.ownsCompany) ||
+                            authProvider?.user?.userType === "trucking_company" &&
+                            <TouchableOpacity style={styles.rejectButton}>
+                                <LinearGradient
+                                    colors={["#760000", "#D64343"]}
+                                    style={styles.buttonGradient}
+                                    start={{x: 0, y: 0}}
+                                    end={{x: 1, y: 1}}
+                                >
+                                    <Text style={styles.buttonText}>Reject</Text>
+                                </LinearGradient>
+                            </TouchableOpacity>}
                     </View>
                 </View>
             </View>
@@ -284,83 +285,83 @@ const styles = StyleSheet.create({
 });
 
 const mapStyle = [
-    { elementType: 'geometry', stylers: [{ color: '#f5f5f5' }] },
-    { elementType: 'labels.text.fill', stylers: [{ color: '#616161' }] },
-    { elementType: 'labels.text.stroke', stylers: [{ color: '#f5f5f5' }] },
+    {elementType: 'geometry', stylers: [{color: '#f5f5f5'}]},
+    {elementType: 'labels.text.fill', stylers: [{color: '#616161'}]},
+    {elementType: 'labels.text.stroke', stylers: [{color: '#f5f5f5'}]},
     {
         featureType: 'administrative.locality',
         elementType: 'labels.text.fill',
-        stylers: [{ color: '#9e9e9e' }],
+        stylers: [{color: '#9e9e9e'}],
     },
     {
         featureType: 'poi',
         elementType: 'labels.text.fill',
-        stylers: [{ color: '#757575' }],
+        stylers: [{color: '#757575'}],
     },
     {
         featureType: 'poi.park',
         elementType: 'geometry',
-        stylers: [{ color: '#e5f3e0' }],
+        stylers: [{color: '#e5f3e0'}],
     },
     {
         featureType: 'poi.park',
         elementType: 'labels.text.fill',
-        stylers: [{ color: '#4c8b4c' }],
+        stylers: [{color: '#4c8b4c'}],
     },
     {
         featureType: 'road',
         elementType: 'geometry',
-        stylers: [{ color: '#ffffff' }],
+        stylers: [{color: '#ffffff'}],
     },
     {
         featureType: 'road',
         elementType: 'geometry.stroke',
-        stylers: [{ color: '#e0e0e0' }],
+        stylers: [{color: '#e0e0e0'}],
     },
     {
         featureType: 'road',
         elementType: 'labels.text.fill',
-        stylers: [{ color: '#757575' }],
+        stylers: [{color: '#757575'}],
     },
     {
         featureType: 'road.highway',
         elementType: 'geometry',
-        stylers: [{ color: '#dadada' }],
+        stylers: [{color: '#dadada'}],
     },
     {
         featureType: 'road.highway',
         elementType: 'geometry.stroke',
-        stylers: [{ color: '#c0c0c0' }],
+        stylers: [{color: '#c0c0c0'}],
     },
     {
         featureType: 'road.highway',
         elementType: 'labels.text.fill',
-        stylers: [{ color: '#616161' }],
+        stylers: [{color: '#616161'}],
     },
     {
         featureType: 'transit',
         elementType: 'geometry',
-        stylers: [{ color: '#e0e0e0' }],
+        stylers: [{color: '#e0e0e0'}],
     },
     {
         featureType: 'transit.station',
         elementType: 'labels.text.fill',
-        stylers: [{ color: '#757575' }],
+        stylers: [{color: '#757575'}],
     },
     {
         featureType: 'water',
         elementType: 'geometry',
-        stylers: [{ color: '#c9f0ff' }],
+        stylers: [{color: '#c9f0ff'}],
     },
     {
         featureType: 'water',
         elementType: 'labels.text.fill',
-        stylers: [{ color: '#4c4c4c' }],
+        stylers: [{color: '#4c4c4c'}],
     },
     {
         featureType: 'water',
         elementType: 'labels.text.stroke',
-        stylers: [{ color: '#c9f0ff' }],
+        stylers: [{color: '#c9f0ff'}],
     },
 ];
 

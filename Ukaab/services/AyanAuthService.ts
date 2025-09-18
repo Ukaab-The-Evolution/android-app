@@ -2,6 +2,7 @@ import Config from "react-native-config";
 import {GoogleSignin} from "@react-native-google-signin/google-signin";
 import {supabase} from "../supabase.ts";
 import {User} from "@supabase/supabase-js";
+import UkaabUser from "../models/User.ts";
 import * as Keychain from 'react-native-keychain';
 import Geolocation from '@react-native-community/geolocation';
 
@@ -13,6 +14,8 @@ export interface AyanAuthInterface {
     forgotPassword: (email: string) => Promise<any>;
     getToken: () => Promise<string | null>;
     resetPassword: (token: string, form: PasswordUpdate) => Promise<any>;
+    getMe: (token: string) => Promise<UkaabUser>;
+    deleteToken: () => Promise<any>;
 }
 export interface UserRegister {
     fullName: string;
@@ -43,6 +46,33 @@ class AyanAuthService implements AyanAuthInterface {
         catch (error) {
             return null;
         }
+    }
+
+    deleteToken = async () => {
+        try {
+            await Keychain.resetGenericPassword()
+        }
+        catch (error) {
+            return null;
+        }
+    }
+
+    getMe = async (token: string): Promise<UkaabUser> => {
+        const headers = {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+
+        const response = await fetch(`${Config.API_URL}/api/v1/auth/me`, {
+            headers: headers,
+            method: "GET"
+        })
+        if (!response.ok) {
+            throw response;
+        }
+        const data = await response.json()
+        console.log(data.data.user)
+        return new UkaabUser(data)
     }
 
     resetPassword = async (token: string, form: PasswordUpdate) => {
@@ -124,14 +154,6 @@ class AyanAuthService implements AyanAuthInterface {
         if (!response.ok) {
             throw response;
         }
-        const otp = await fetch(`${Config.API_URL}/api/v1/auth/send-otp`, {
-            method: "POST",
-            headers: headers,
-            body: JSON.stringify({toEmail: body.email})
-        })
-        if (!otp.ok) {
-            throw otp;
-        }
         let accessDenied = false;
         Geolocation.requestAuthorization(undefined, () => {
             accessDenied = true;
@@ -151,6 +173,7 @@ class AyanAuthService implements AyanAuthInterface {
             body: JSON.stringify(form),
         })
         if (!response.ok) {
+            console.log("Response", await response.json())
             throw response;
         }
         const data = await response.json()
